@@ -1,6 +1,7 @@
 {
   "name": "panda-video-continuity",
   "version": "2.3.0",
+  "license": "MIT",
   "description": "An end-to-end film-structured AI-video workflow from story and screenplay through scene-asset production, storyboard, animatic, model handoff, shot production, editorial continuity, and evidence-based acceptance.",
   "keywords": [
     "video",
