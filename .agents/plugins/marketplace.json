@@ -1,14 +1,14 @@
 {
-  "name": "personal-video-production",
+  "name": "shotloom-ai-film-production-marketplace",
   "interface": {
-    "displayName": "个人视频制作插件"
+    "displayName": "Shotloom · AI电影制作"
   },
   "plugins": [
     {
-      "name": "panda-video-continuity",
+      "name": "shotloom-ai-film-production",
       "source": {
         "source": "local",
-        "path": "./plugins/panda-video-continuity"
+        "path": "./plugins/shotloom-ai-film-production"
       },
       "policy": {
         "installation": "AVAILABLE",

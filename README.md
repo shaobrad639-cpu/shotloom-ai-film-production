@@ -1,8 +1,8 @@
-# Panda · 电影化 AI 视频制作
+# Shotloom · 镜织 AI电影制作
 
-Panda 是一套面向连续叙事 AI 视频的可复用制作插件，覆盖故事开发、剧本、场景规划、场景资产、分镜、Animatic、模型交接、镜头生成、连续性检查、剪辑后期与成片验收。
+Shotloom（镜织）是一套面向连续叙事 AI 视频的可复用制作插件，覆盖故事开发、剧本、场景规划、场景资产、分镜、Animatic、模型交接、镜头生成、连续性检查、剪辑后期与成片验收。
 
-当前版本：**2.3.0**
+当前版本：**3.0.0**
 
 ## 适用范围
 
@@ -33,41 +33,41 @@ Panda 是一套面向连续叙事 AI 视频的可复用制作插件，覆盖故�
 在 Codex CLI 中添加这个 GitHub 插件市场：
 
 ```bash
-codex plugin marketplace add shaobrad639-cpu/panda-video-continuity
+codex plugin marketplace add shaobrad639-cpu/shotloom-ai-film-production
 ```
 
 然后：
 
 1. 重新启动 ChatGPT 桌面版或新建 Codex 会话。
 2. 打开 **Plugins**。
-3. 选择 **个人视频制作插件**。
-4. 安装 **Panda · 电影化 AI 视频制作**。
+3. 选择 **Shotloom · AI电影制作**。
+4. 安装 **Shotloom · 镜织 AI电影制作**。
 5. 安装后新建对话再调用。
 
 也可以克隆本仓库，在仓库目录中启动 ChatGPT 桌面版或 Codex；插件清单位于 `.agents/plugins/marketplace.json`。
 
 ## 调用
 
-- ChatGPT：输入 `@panda`，或直接描述视频制作任务。
-- Codex：输入 `$panda`，或从技能列表选择 Panda。
+- ChatGPT：输入 `@shotloom`，或直接描述视频制作任务。
+- Codex：输入 `$shotloom`，或从技能列表选择 Shotloom。
 
 示例：
 
 ```text
-@panda 根据这份剧本建立场景计划、场景资产清单、镜头表和 Animatic 制作计划。
+@shotloom 根据这份剧本建立场景计划、场景资产清单、镜头表和 Animatic 制作计划。
 ```
 
 ```text
-$panda 检查这些连续镜头的场景资产、空间关系、真实尾帧续接和剪辑连续性。
+$shotloom 检查这些连续镜头的场景资产、空间关系、真实尾帧续接和剪辑连续性。
 ```
 
 ## 目录
 
 ```text
 .agents/plugins/marketplace.json
-plugins/panda-video-continuity/
+plugins/shotloom-ai-film-production/
   plugin.json
-  skills/panda/
+  skills/shotloom/
     SKILL.md
     references/
     assets/templates/
@@ -80,7 +80,7 @@ plugins/panda-video-continuity/
 
 ```bash
 python3 -m unittest discover \
-  -s plugins/panda-video-continuity/skills/panda/tests \
+  -s plugins/shotloom-ai-film-production/skills/shotloom/tests \
   -p 'test_*.py'
 ```
 
@@ -94,4 +94,4 @@ python3 -m unittest discover \
 
 ## 说明
 
-Panda 提供制作流程、模板、检查机制和质量门槛，不替代导演、摄影、表演、剪辑与声音方面的创作判断。可测量、可复现的问题可以阻断放行；审美和创作判断应记录为评审意见，由创作者最终决定。
+Shotloom 提供制作流程、模板、检查机制和质量门槛，不替代导演、摄影、表演、剪辑与声音方面的创作判断。可测量、可复现的问题可以阻断放行；审美和创作判断应记录为评审意见，由创作者最终决定。

@@ -1,4 +1,4 @@
-"""Shared fixtures for the panda validator test-suite."""
+"""Shared fixtures for the Shotloom validator test-suite."""
 
 from __future__ import annotations
 

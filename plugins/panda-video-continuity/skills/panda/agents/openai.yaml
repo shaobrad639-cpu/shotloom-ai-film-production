@@ -1,7 +1,0 @@
-interface:
-  display_name: "Panda · 电影化 AI 视频制作"
-  short_description: "从剧本、分镜到生成和验收的电影化 AI 视频流程"
-  default_prompt: "使用 $panda 从剧本、分镜或当前素材开始，按电影制作流程规划、制作并验收这个 AI 视频。"
-
-policy:
-  allow_implicit_invocation: true
