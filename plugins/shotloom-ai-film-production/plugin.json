@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shotloom-ai-film-production",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "license": "MIT",
   "description": "An end-to-end film-structured AI-video workflow from story and screenplay through scene-asset production, storyboard, animatic, model handoff, shot production, editorial continuity, and evidence-based acceptance.",
   "keywords": [
@@ -17,7 +17,7 @@
       "interface": {
         "displayName": "Shotloom · 镜织 AI电影制作",
         "shortDescription": "从剧本、分镜到生成和验收的电影化 AI 视频流程",
-        "longDescription": "从故事开发、正式剧本、剧本拆解和场景计划开始，先建立空间预资产，再完成镜头表、Storyboard 与 Animatic，锁剪后验收正式场景资产包；按 Sequence、Scene、Shot、Setup、Take 与技术 Segment 管理 Gemini、MiniMax 等 AI 视频生产，并覆盖摄影机语言、资产和空间连续性、真实尾帧续接、声音与成片验收。",
+        "longDescription": "从故事开发、正式剧本、剧本拆解和场景计划开始，先建立空间预资产，再完成镜头表、Storyboard 与 Animatic，锁剪后验收正式场景资产包；按 Sequence、Scene、Shot、Setup、Take 与技术 Segment 管理 Gemini、MiniMax 等 AI 视频生产，并覆盖摄影机语言、资产和空间连续性、环境动态分层与无角色预演、真实尾帧续接、声音与成片验收。",
         "category": "Productivity",
         "defaultPrompt": [
           "使用 Shotloom 从剧本、分镜或当前素材开始规划这个 AI 视频项目。",

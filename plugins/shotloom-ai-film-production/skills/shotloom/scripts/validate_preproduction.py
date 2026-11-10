@@ -32,9 +32,9 @@ def require_text(data: dict[str, Any], field: str, prefix: str, errors: list[str
     return str(value)
 
 
-def require_schema(data: dict[str, Any], prefix: str, errors: list[str]) -> None:
-    if data.get("schema_version") != 1:
-        errors.append(f"{prefix}.schema_version: expected 1")
+def require_schema(data: dict[str, Any], prefix: str, errors: list[str], expected: int = 1) -> None:
+    if data.get("schema_version") != expected:
+        errors.append(f"{prefix}.schema_version: expected {expected}")
 
 
 def unique_ids(items: Any, field: str, prefix: str, errors: list[str]) -> set[str]:
@@ -80,15 +80,15 @@ def validate(
     errors: list[str] = []
     warnings: list[str] = []
     documents = [
-        ("script_breakdown", breakdown),
-        *( (f"scene_plan[{index}]", item) for index, item in enumerate(scene_plans) ),
-        *( (f"scene_asset_package[{index}]", item) for index, item in enumerate(scene_asset_packages) ),
-        ("shot_list", shot_list),
-        ("animatic", animatic),
-        ("model_profile", model_profile),
+        ("script_breakdown", breakdown, 1),
+        *( (f"scene_plan[{index}]", item, 1) for index, item in enumerate(scene_plans) ),
+        *( (f"scene_asset_package[{index}]", item, 2) for index, item in enumerate(scene_asset_packages) ),
+        ("shot_list", shot_list, 1),
+        ("animatic", animatic, 1),
+        ("model_profile", model_profile, 1),
     ]
-    for prefix, data in documents:
-        require_schema(data, prefix, errors)
+    for prefix, data, expected in documents:
+        require_schema(data, prefix, errors, expected)
 
     project_id = require_text(breakdown, "project_id", "script_breakdown", errors)
     require_text(breakdown, "screenplay_version", "script_breakdown", errors)

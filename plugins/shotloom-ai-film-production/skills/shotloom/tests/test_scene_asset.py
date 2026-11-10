@@ -99,6 +99,54 @@ class SceneAssetTests(unittest.TestCase):
         errors, _ = vsap.validate(package, "final", manifest)
         self.assertTrue(any("absent from supplied" in error for error in errors), errors)
 
+    def test_dynamic_final_requires_environment_only_previs(self) -> None:
+        package, manifest = final_fixture()
+        package["environment"]["dynamic_regions"] = [
+            {
+                "region_id": "ENV-WATER",
+                "motion_type": "surface flow",
+                "motion_direction": "left to right",
+                "speed_range": "0.2-0.4 m/s",
+                "layer_reference": "ENV-WATER_LAYER_v001",
+                "mask_reference": "ENV-WATER_MASK_v001",
+                "intensity_range": "low to medium",
+                "phase_baseline": "crest at x=0",
+            }
+        ]
+        package["environment"]["dynamic_control"].update({"status": "PASS"})
+        errors, _ = vsap.validate(package, "final", manifest)
+        self.assertTrue(any("environment_only_previs" in error for error in errors), errors)
+
+    def test_dynamic_final_passes_with_layered_previs(self) -> None:
+        package, manifest = final_fixture()
+        package["environment"]["dynamic_regions"] = [
+            {
+                "region_id": "ENV-WATER",
+                "motion_type": "surface flow",
+                "motion_direction": "left to right",
+                "speed_range": "0.2-0.4 m/s",
+                "layer_reference": "ENV-WATER_LAYER_v001",
+                "mask_reference": "ENV-WATER_MASK_v001",
+                "intensity_range": "low to medium",
+                "phase_baseline": "crest at x=0",
+            }
+        ]
+        package["environment"]["dynamic_control"].update(
+            {
+                "status": "PASS",
+                "reason": "",
+                "layer_manifest_reference": "SC01_ENV_LAYERS_v001",
+                "environment_only_previs_reference": "SC01_ENV_PREVIS_v001",
+                "environment_only_previs_status": "PASS",
+                "reaction_coupling_plan_reference": "SC01_ENV_REACTION_v001",
+                "phase_baseline_reference": "SC01_ENV_PHASE_v001",
+                "evidence": "environment-only playback approved",
+            }
+        )
+        errors, warnings = vsap.validate(package, "final", manifest)
+        self.assertEqual(errors, [])
+        self.assertEqual(warnings, [])
+
 
 if __name__ == "__main__":
     unittest.main()

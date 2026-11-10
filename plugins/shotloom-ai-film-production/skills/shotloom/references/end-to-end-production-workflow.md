@@ -61,10 +61,10 @@
 ## 阶段 G：正式场景资产包
 
 1. Animatic 达到 `LOCKED_FOR_PRODUCTION` 后，根据实际镜头、景别、Setup、可见范围和运镜制作 `FINAL` 阶段场景资产包。
-2. 交付场景正式母版、空间母版、固定设备、批准 Setup、干净底板、必要分层/遮挡/深度或几何、环境动态、Light State、Look 和技术基线。
+2. 交付场景正式母版、空间母版、固定设备、批准 Setup、干净底板、必要分层/遮挡/深度或几何、环境动态、Light State、Look 和技术基线。对可见动态环境，单独交付动态区域图层/蒙版、方向、速度、强度、相位基线和反应耦合计划。
 3. 资产包引用已验收资产清单；文件、版本和 SHA-256 闭合。角色和活动道具不得烘焙进需要复用的场景底板，除非镜头制作方法明确要求并有独立干净版本。
 
-放行条件：场景资产包状态为 `ACCEPTED`；覆盖所有批准镜头需要的画面范围；空间、固定设备、摄影机和角色触达通过实际查看或 Previs；静态保护区与允许变化区明确。正式关键帧不得引用 `LAYOUT_APPROVED` 占位资产。
+放行条件：场景资产包状态为 `ACCEPTED`；覆盖所有批准镜头需要的画面范围；空间、固定设备、摄影机和角色触达通过实际查看或 Previs；静态保护区与允许变化区明确。可见动态环境已完成不含角色的环境动态预演，证明自然运动、静态锚点与相位连续性成立。正式关键帧不得引用 `LAYOUT_APPROVED` 占位资产。
 
 ## 阶段 H：模型能力配置与镜头路由
 
@@ -77,12 +77,12 @@
 
 ## 阶段 I：正式镜头五道关卡
 
-对进入生产的每个 Shot 执行 Shotloom 五道关卡。Storyboard 与 Animatic 提供镜头意图和时长基线，通行证负责生产证据。若正式候选迫使镜头目的、时长或剪辑结构变化，应退回镜头表/Animatic，而不是仅在提示词中暗改。
+对进入生产的每个 Shot 执行 Shotloom 五道关卡，其中第二关 B 为环境动态控制子关卡：场景母版 → 动态分层 → 无角色环境预演 → 角色/环境反应合成 → 完整镜头验收。Storyboard 与 Animatic 提供镜头意图和时长基线，通行证负责生产证据。若正式候选迫使镜头目的、时长或剪辑结构变化，应退回镜头表/Animatic，而不是仅在提示词中暗改。
 
 ## 阶段 J：生成、验收与返工
 
 1. 按模型交接包生成，保留模型 ID、参数、输入版本、输出版本和重试轮次。
-2. 以目标帧率实际观看，检查关键帧、动态、声音、剪点、连续性和技术缺陷。
+2. 以目标帧率实际观看，检查关键帧、角色/物体运动、环境运动、动作驱动的环境反应、摄影机、声音、剪点、跨镜头/分段相位、静态锚点和技术缺陷。
 3. 只接受能回指通行证和资产证据的版本。同一缺陷重复出现时退回造成问题的阶段，不无限抽卡。
 4. 连续 Take 的后续技术 Segment 使用验收通过的真实尾帧和尾部窗口；正常切镜不复制上一镜头像素。
 
@@ -105,4 +105,4 @@
 
 ## 模板使用顺序
 
-`project-brief.md` → `story-development.md` → `screenplay.md` → `script-breakdown.json` → `scene-plan.json` → `scene-asset-package.json (LAYOUT)` → `shot-list.json` → `storyboard-sheet.md` → `animatic-timeline.json` → `scene-asset-package.json (FINAL)` → `model-capability-profile.json` → `shot-production-pass.json` → `generation-brief.md` → 验收与后期。
+`project-brief.md` → `story-development.md` → `screenplay.md` → `script-breakdown.json` → `scene-plan.json` → `scene-asset-package.json (LAYOUT)` → `shot-list.json` → `storyboard-sheet.md` → `animatic-timeline.json` → `scene-asset-package.json (FINAL，含环境动态分层与无角色预演)` → `model-capability-profile.json` → `shot-production-pass.json` → `generation-brief.md` → 完整镜头验收与后期。

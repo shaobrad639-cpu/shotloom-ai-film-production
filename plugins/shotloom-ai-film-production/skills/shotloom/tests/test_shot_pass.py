@@ -1,4 +1,4 @@
-"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.3.0)."""
+"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.4.0)."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ class ShotPassTests(unittest.TestCase):
         self.mutate(lambda data: data["release"].update({"validator_version": "2.0.0"}))
         blocked = self.release()
         self.assertEqual(blocked.returncode, 1)
-        self.assertIn("expected 2.3.0", blocked.stdout)
+        self.assertIn("expected 2.4.0", blocked.stdout)
 
         result = self.release("--restamp")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -168,7 +168,7 @@ class ShotPassTests(unittest.TestCase):
         result = self.release("--json")
         payload = json.loads(result.stdout)
         self.assertEqual(payload["status"], "PASS")
-        self.assertEqual(payload["validator_version"], "2.3.0")
+        self.assertEqual(payload["validator_version"], "2.4.0")
 
     def test_stamp_writes_validator_metadata(self) -> None:
         self.mutate(lambda data: data["shot"].update({"status": "READY_FOR_RELEASE"}))
@@ -176,7 +176,7 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         data = load_json(self.pass_file)
         self.assertEqual(data["shot"]["status"], "GREENLIT")
-        self.assertEqual(data["release"]["validator_version"], "2.3.0")
+        self.assertEqual(data["release"]["validator_version"], "2.4.0")
         self.assertEqual(data["release"]["validator_result"], "PASS")
 
 
@@ -252,6 +252,45 @@ class RuleTests(unittest.TestCase):
         errors: list[str] = []
         vsp.validate_retry(self.data, errors)
         self.assertIn("retry_control: same-defect fuse is open", errors)
+
+    def test_dynamic_environment_requires_environment_only_previs(self) -> None:
+        self.data["environment_animation"].update(
+            {
+                "status": "PASS",
+                "reason": "",
+                "registered_regions": ["water"],
+                "motion_direction": "left to right",
+                "motion_intensity": "low",
+                "entry_phase": "crest enters frame",
+                "exit_phase": "crest reaches center",
+                "reaction_coupling_status": "N/A",
+                "reaction_coupling_reason": "no subject contact",
+            }
+        )
+        errors: list[str] = []
+        vsp.validate_environment(self.data, "release", errors)
+        self.assertTrue(any("scene_dynamic_control_reference" in error for error in errors), errors)
+        self.assertTrue(any("environment_only_previs" in error for error in errors), errors)
+
+    def test_reaction_coupling_requires_observable_mapping(self) -> None:
+        self.data["environment_animation"].update(
+            {
+                "status": "PASS",
+                "scene_dynamic_control_reference": "SC01_ENV_v001",
+                "environment_only_previs_reference": "SC01_ENV_PREVIS_v001",
+                "environment_only_previs_status": "PASS",
+                "registered_regions": ["mist"],
+                "motion_direction": "away from subject",
+                "motion_intensity": "medium",
+                "entry_phase": "settled",
+                "exit_phase": "dispersed",
+                "reaction_coupling_status": "PASS",
+                "reaction_couplings": [],
+            }
+        )
+        errors: list[str] = []
+        vsp.validate_environment(self.data, "release", errors)
+        self.assertTrue(any("reaction_couplings" in error for error in errors), errors)
 
 
 if __name__ == "__main__":

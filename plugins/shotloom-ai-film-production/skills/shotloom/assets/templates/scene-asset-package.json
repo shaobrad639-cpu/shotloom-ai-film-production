@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "project_id": "",
   "scene_id": "SC01",
   "package_id": "SC01_ASSET",
@@ -44,6 +44,17 @@
   "environment": {
     "static_regions": [],
     "dynamic_regions": [],
+    "dynamic_control": {
+      "status": "N/A",
+      "reason": "intentional static environment",
+      "layer_manifest_reference": "",
+      "environment_only_previs_reference": "",
+      "environment_only_previs_status": "N/A",
+      "reaction_coupling_plan_reference": "",
+      "phase_baseline_reference": "",
+      "evidence": "",
+      "loop_reset_forbidden": true
+    },
     "light_state_reference": "",
     "look_reference": ""
   },

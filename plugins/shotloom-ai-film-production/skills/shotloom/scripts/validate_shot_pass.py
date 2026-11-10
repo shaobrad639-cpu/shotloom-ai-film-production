@@ -16,8 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_asset_manifest  # noqa: E402  (co-located helper script)
 
 
-SCHEMA_VERSION = 11
-VALIDATOR_VERSION = "2.3.0"
+SCHEMA_VERSION = 12
+VALIDATOR_VERSION = "2.4.0"
 GATE_STATUSES = {"NOT_RUN", "IN_PROGRESS", "PASS", "BLOCKED", "N/A"}
 PASS_OR_NA = {"PASS", "N/A"}
 SHOT_STATUSES = {
@@ -33,14 +33,17 @@ REOPENABLE = {"REJECTED", "SUPERSEDED"}
 REQUIRED_GATES = {
     "previs": (
         "gate_1_script_edit_action", "gate_2_assets_scene_space_props",
+        "gate_2b_environment_dynamics",
         "gate_3_blocking_camera_sound",
     ),
     "release": (
         "gate_1_script_edit_action", "gate_2_assets_scene_space_props",
+        "gate_2b_environment_dynamics",
         "gate_3_blocking_camera_sound", "gate_4_key_states_previs", "gate_5a_release",
     ),
     "acceptance": (
         "gate_1_script_edit_action", "gate_2_assets_scene_space_props",
+        "gate_2b_environment_dynamics",
         "gate_3_blocking_camera_sound", "gate_4_key_states_previs",
         "gate_5a_release", "gate_5b_acceptance",
     ),
@@ -375,19 +378,51 @@ def validate_environment(data: dict[str, Any], target: str, errors: list[str]) -
     if status == "N/A":
         if not str(env.get("reason", "")).strip():
             errors.append("environment_animation.reason: required for N/A")
+        if env.get("environment_only_previs_status") != "N/A":
+            errors.append("environment_animation.environment_only_previs_status: N/A environment requires N/A")
+        if env.get("reaction_coupling_status") != "N/A":
+            errors.append("environment_animation.reaction_coupling_status: N/A environment requires N/A")
         return
     if status != "PASS":
         errors.append("environment_animation.status: must be PASS or N/A")
         return
+    require_text(data, "environment_animation.scene_dynamic_control_reference", errors)
+    require_text(data, "environment_animation.environment_only_previs_reference", errors)
+    if env.get("environment_only_previs_status") != "PASS":
+        errors.append("environment_animation.environment_only_previs_status: dynamic environment requires PASS")
     require_list(data, "environment_animation.registered_regions", errors, nonempty=True)
     for field in ("motion_direction", "motion_intensity", "entry_phase", "exit_phase"):
         require_text(data, f"environment_animation.{field}", errors)
     if env.get("loop_reset_forbidden") is not True:
         errors.append("environment_animation.loop_reset_forbidden: must be true")
+    coupling_status = env.get("reaction_coupling_status")
+    if coupling_status == "PASS":
+        couplings = require_list(data, "environment_animation.reaction_couplings", errors, nonempty=True)
+        for index, coupling in enumerate(couplings):
+            prefix = f"environment_animation.reaction_couplings[{index}]"
+            if not isinstance(coupling, dict):
+                errors.append(f"{prefix}: must be an object")
+                continue
+            for field in ("trigger", "target_region_id", "expected_response", "delay_or_phase", "falloff_or_extent"):
+                if not isinstance(coupling.get(field), str) or not coupling[field].strip():
+                    errors.append(f"{prefix}.{field}: required")
+    elif coupling_status == "N/A":
+        require_text(data, "environment_animation.reaction_coupling_reason", errors)
+    else:
+        errors.append("environment_animation.reaction_coupling_status: must be PASS or N/A")
     if target == "acceptance":
+        if env.get("environment_motion_check") != "PASS":
+            errors.append("environment_animation.environment_motion_check: acceptance requires PASS")
         if env.get("freeze_check") != "PASS" or env.get("static_drift_check") != "PASS":
             errors.append("environment_animation: acceptance requires freeze and static-drift PASS")
+        expected_reaction = "PASS" if coupling_status == "PASS" else "N/A"
+        if env.get("reaction_check") != expected_reaction:
+            errors.append(
+                "environment_animation.reaction_check: must match reaction_coupling_status "
+                f"({expected_reaction})"
+            )
         require_text(data, "environment_animation.evidence", errors)
+        require_text(data, "environment_animation.full_shot_evidence", errors)
 
 
 def validate_release_inputs(data: dict[str, Any], errors: list[str]) -> None:
@@ -399,7 +434,8 @@ def validate_release_inputs(data: dict[str, Any], errors: list[str]) -> None:
             errors.append("preflight_review.context_mode: unsupported value")
         require_text(data, "preflight_review.report_reference", errors)
         for field in (
-            "script_visual_alignment", "asset_direction_check", "camera_editing_check",
+            "script_visual_alignment", "asset_direction_check", "environment_motion_check",
+            "subject_environment_causality_check", "camera_editing_check",
             "physical_action_check", "sound_check",
         ):
             if review.get(field) not in PASS_OR_NA:
@@ -486,6 +522,12 @@ def validate_acceptance(data: dict[str, Any], errors: list[str]) -> None:
     if sampling.get("motion_review_status") != "PASS":
         errors.append("acceptance_sampling.motion_review_status: must be PASS")
     require_text(data, "acceptance_sampling.motion_review_evidence", errors)
+    for field in (
+        "subject_motion_status", "environment_motion_status", "camera_motion_status",
+        "subject_environment_causality_status",
+    ):
+        if sampling.get(field) not in PASS_OR_NA:
+            errors.append(f"acceptance_sampling.{field}: must be PASS or N/A")
     if sampling.get("audio_review_status") not in PASS_OR_NA:
         errors.append("acceptance_sampling.audio_review_status: must be PASS or N/A")
     require_text(data, "acceptance_sampling.audio_review_evidence", errors)
@@ -610,7 +652,11 @@ def validate_target(
     elif rank > TARGET_RANK[target]:
         errors.append(f"shot.status: {status} is beyond the {target} target")
     for gate_name in REQUIRED_GATES[target]:
-        if get(data, f"gates.{gate_name}.status") != "PASS":
+        gate_status = get(data, f"gates.{gate_name}.status")
+        if gate_name == "gate_2b_environment_dynamics":
+            if gate_status not in PASS_OR_NA:
+                errors.append(f"gates.{gate_name}.status: {target} requires PASS or justified N/A")
+        elif gate_status != "PASS":
             errors.append(f"gates.{gate_name}.status: {target} requires PASS")
     if target in {"release", "acceptance"}:
         questions = get(data, "constraints.critical_open_questions")

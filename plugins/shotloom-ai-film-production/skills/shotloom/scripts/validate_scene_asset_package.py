@@ -61,8 +61,8 @@ def validate(
 ) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     warnings: list[str] = []
-    if package.get("schema_version") != 1:
-        errors.append("schema_version: expected 1")
+    if package.get("schema_version") != 2:
+        errors.append("schema_version: expected 2")
     for field in (
         "project_id", "scene_id", "package_id", "package_version",
         "source_scene_plan_version", "production_method",
@@ -110,7 +110,30 @@ def validate(
         errors.append("environment: required object")
         environment = {}
     require_list(environment, "static_regions", "environment", errors, nonempty=True)
-    require_list(environment, "dynamic_regions", "environment", errors, nonempty=False)
+    dynamic_regions = require_list(environment, "dynamic_regions", "environment", errors, nonempty=False)
+    dynamic_control = environment.get("dynamic_control")
+    if not isinstance(dynamic_control, dict):
+        errors.append("environment.dynamic_control: required object")
+        dynamic_control = {}
+    if dynamic_regions:
+        if dynamic_control.get("status") not in {"PLANNED", "PASS"}:
+            errors.append("environment.dynamic_control.status: dynamic regions require PLANNED or PASS")
+        for index, region in enumerate(dynamic_regions):
+            prefix = f"environment.dynamic_regions[{index}]"
+            if not isinstance(region, dict):
+                errors.append(f"{prefix}: must be an object")
+                continue
+            for field in ("region_id", "motion_type", "motion_direction", "speed_range"):
+                require_text(region, field, prefix, errors)
+    else:
+        if dynamic_control.get("status") != "N/A":
+            errors.append("environment.dynamic_control.status: no dynamic regions requires N/A")
+        require_text(dynamic_control, "reason", "environment.dynamic_control", errors)
+        if dynamic_control.get("environment_only_previs_status") != "N/A":
+            errors.append(
+                "environment.dynamic_control.environment_only_previs_status: "
+                "no dynamic regions requires N/A"
+            )
 
     approval = package.get("approval")
     if not isinstance(approval, dict):
@@ -151,6 +174,27 @@ def validate(
             errors.append(f"camera_setups[{setup_index}].status: must be APPROVED for final")
     require_text(environment, "light_state_reference", "environment", errors)
     require_text(environment, "look_reference", "environment", errors)
+    if dynamic_regions:
+        if dynamic_control.get("status") != "PASS":
+            errors.append("environment.dynamic_control.status: final dynamic environment requires PASS")
+        if dynamic_control.get("environment_only_previs_status") != "PASS":
+            errors.append(
+                "environment.dynamic_control.environment_only_previs_status: "
+                "final dynamic environment requires PASS"
+            )
+        for field in (
+            "layer_manifest_reference", "environment_only_previs_reference",
+            "reaction_coupling_plan_reference", "phase_baseline_reference", "evidence",
+        ):
+            require_text(dynamic_control, field, "environment.dynamic_control", errors)
+        if dynamic_control.get("loop_reset_forbidden") is not True:
+            errors.append("environment.dynamic_control.loop_reset_forbidden: must be true")
+        for index, region in enumerate(dynamic_regions):
+            if not isinstance(region, dict):
+                continue
+            prefix = f"environment.dynamic_regions[{index}]"
+            for field in ("layer_reference", "mask_reference", "intensity_range", "phase_baseline"):
+                require_text(region, field, prefix, errors)
 
     manifest = package.get("asset_manifest")
     if not isinstance(manifest, dict):

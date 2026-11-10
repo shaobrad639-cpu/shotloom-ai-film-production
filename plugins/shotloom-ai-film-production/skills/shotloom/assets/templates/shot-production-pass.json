@@ -1,5 +1,5 @@
 {
-  "schema_version": 11,
+  "schema_version": 12,
   "shot": {
     "project_id": "",
     "sequence_id": "",
@@ -121,15 +121,24 @@
   "environment_animation": {
     "status": "N/A",
     "reason": "intentional static environment",
+    "scene_dynamic_control_reference": "",
+    "environment_only_previs_reference": "",
+    "environment_only_previs_status": "N/A",
     "static_protected_assets": [],
     "registered_regions": [],
     "motion_direction": "",
     "motion_intensity": "",
     "entry_phase": "",
     "exit_phase": "",
+    "reaction_coupling_status": "N/A",
+    "reaction_coupling_reason": "no visible interaction with a dynamic environment",
+    "reaction_couplings": [],
+    "environment_motion_check": "N/A",
+    "reaction_check": "N/A",
     "freeze_check": "N/A",
     "static_drift_check": "N/A",
     "evidence": "",
+    "full_shot_evidence": "",
     "loop_reset_forbidden": true
   },
   "state_transition": {
@@ -148,6 +157,7 @@
   "gates": {
     "gate_1_script_edit_action": {"status": "NOT_RUN", "evidence": "", "reason": ""},
     "gate_2_assets_scene_space_props": {"status": "NOT_RUN", "evidence": "", "reason": ""},
+    "gate_2b_environment_dynamics": {"status": "NOT_RUN", "evidence": "", "reason": ""},
     "gate_3_blocking_camera_sound": {"status": "NOT_RUN", "evidence": "", "reason": ""},
     "gate_4_key_states_previs": {"status": "NOT_RUN", "evidence": "", "reason": ""},
     "gate_5a_release": {"status": "NOT_RUN", "evidence": "", "reason": ""},
@@ -170,6 +180,8 @@
     "report_reference": "",
     "script_visual_alignment": "NOT_RUN",
     "asset_direction_check": "NOT_RUN",
+    "environment_motion_check": "NOT_RUN",
+    "subject_environment_causality_check": "NOT_RUN",
     "camera_editing_check": "NOT_RUN",
     "physical_action_check": "NOT_RUN",
     "sound_check": "NOT_RUN"
@@ -209,6 +221,10 @@
     "full_resolution_frame_checks": [],
     "motion_review_status": "NOT_RUN",
     "motion_review_evidence": "",
+    "subject_motion_status": "NOT_RUN",
+    "environment_motion_status": "NOT_RUN",
+    "camera_motion_status": "NOT_RUN",
+    "subject_environment_causality_status": "NOT_RUN",
     "audio_review_status": "NOT_RUN",
     "audio_review_evidence": ""
   }

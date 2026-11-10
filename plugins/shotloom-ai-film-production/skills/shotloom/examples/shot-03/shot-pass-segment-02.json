@@ -1,5 +1,5 @@
 {
-  "schema_version": 11,
+  "schema_version": 12,
   "shot": {
     "project_id": "DEMO_EP01",
     "sequence_id": "DEMO_EP01_SQ01",
@@ -271,6 +271,9 @@
   "environment_animation": {
     "status": "N/A",
     "reason": "intentional static interior during this seven-second shot",
+    "scene_dynamic_control_reference": "",
+    "environment_only_previs_reference": "",
+    "environment_only_previs_status": "N/A",
     "static_protected_assets": [
       "EQ-MAIN"
     ],
@@ -279,9 +282,15 @@
     "motion_intensity": "",
     "entry_phase": "",
     "exit_phase": "",
+    "reaction_coupling_status": "N/A",
+    "reaction_coupling_reason": "no visible interaction with a dynamic environment",
+    "reaction_couplings": [],
+    "environment_motion_check": "N/A",
+    "reaction_check": "N/A",
     "freeze_check": "N/A",
     "static_drift_check": "N/A",
     "evidence": "shot design contains no continuous environmental motion",
+    "full_shot_evidence": "",
     "loop_reset_forbidden": true
   },
   "state_transition": {
@@ -329,6 +338,11 @@
       "status": "PASS",
       "evidence": "资产、空间与道具因果闭合",
       "reason": ""
+    },
+    "gate_2b_environment_dynamics": {
+      "status": "N/A",
+      "evidence": "approved shot design contains no visible dynamic environment",
+      "reason": "intentional static interior"
     },
     "gate_3_blocking_camera_sound": {
       "status": "PASS",
