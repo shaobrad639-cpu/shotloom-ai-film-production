@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "project_id": "",
+  "screenplay_version": "",
+  "status": "DRAFT",
+  "sequences": [
+    {
+      "sequence_id": "SEQ01",
+      "purpose": "",
+      "scene_ids": ["SC01"]
+    }
+  ],
+  "scenes": [
+    {
+      "scene_id": "SC01",
+      "sequence_id": "SEQ01",
+      "slugline": "",
+      "purpose": "",
+      "entry_state": "",
+      "exit_state": "",
+      "beat_ids": ["BT01"],
+      "character_ids": [],
+      "set_ids": [],
+      "prop_ids": [],
+      "sound_ids": [],
+      "effect_ids": [],
+      "model_risks": []
+    }
+  ],
+  "beats": [
+    {
+      "beat_id": "BT01",
+      "scene_id": "SC01",
+      "cause": "",
+      "visible_action": "",
+      "result": "",
+      "emotion_change": "",
+      "target_duration_seconds": 0
+    }
+  ],
+  "asset_requirements": [],
+  "unresolved_items": []
+}

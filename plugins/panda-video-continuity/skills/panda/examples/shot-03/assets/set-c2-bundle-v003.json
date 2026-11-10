@@ -1,0 +1,11 @@
+{
+  "asset_id": "SET-001",
+  "version": "v003",
+  "kind": "scene-bundle",
+  "setup": "C2",
+  "layers": [
+    "plate",
+    "character",
+    "module"
+  ]
+}

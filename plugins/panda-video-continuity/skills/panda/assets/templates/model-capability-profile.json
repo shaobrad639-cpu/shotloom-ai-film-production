@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "provider": "",
+  "product_name": "",
+  "model_id": "",
+  "profile_version": "v001",
+  "verified_at": "",
+  "verification_status": "UNVERIFIED",
+  "account_or_region_scope": "",
+  "inputs": {
+    "text": false,
+    "image_reference": false,
+    "first_frame": false,
+    "last_frame": false,
+    "video_reference": false,
+    "audio_reference": false,
+    "maximum_reference_count": null
+  },
+  "outputs": {
+    "duration_options_seconds": [],
+    "aspect_ratios": [],
+    "resolutions": [],
+    "frame_rates": [],
+    "audio_generation": false,
+    "variable_frame_rate_possible": null,
+    "watermark_or_provenance": ""
+  },
+  "controls": {
+    "seed": false,
+    "negative_prompt": false,
+    "camera_control": [],
+    "motion_strength": false,
+    "extend_video": false,
+    "continuation_from_actual_tail": false
+  },
+  "operational": {
+    "cost_basis": "",
+    "typical_wait": "",
+    "retry_limit": 0,
+    "content_or_safety_constraints": []
+  },
+  "known_failure_modes": [],
+  "suitable_shot_types": [],
+  "unsuitable_shot_types": [],
+  "verification_evidence": []
+}

@@ -1,0 +1,91 @@
+# Panda · 电影化 AI 视频制作
+
+Panda 是一套面向连续叙事 AI 视频的可复用制作插件，覆盖故事开发、剧本、场景规划、场景资产、分镜、Animatic、模型交接、镜头生成、连续性检查、剪辑后期与成片验收。
+
+当前版本：**2.3.0**
+
+## 适用范围
+
+- 使用 Gemini、MiniMax 等模型制作连续叙事视频
+- 从故事或剧本建立镜头表、Storyboard 与 Animatic
+- 锁定角色、场景、固定设备、道具、摄影机与灯光状态
+- 同场景连续动作、技术分段和真实尾帧续接
+- 关键帧、视频片段、相邻镜头、声音与交付 QC
+
+## 核心流程
+
+1. 项目定义与故事开发
+2. 正式剧本与剧本拆解
+3. 场景计划
+4. 场景空间预资产（`LAYOUT_APPROVED`）
+5. 镜头表、Storyboard 与 Animatic
+6. 正式场景资产包（`FINAL / ACCEPTED`）
+7. 镜头生产五道关卡
+8. 视频生成、真实尾帧续接与验收
+9. 剪辑、声音、调色与成片 QC
+
+正式关键帧和视频不得绕过场景资产包验收。相同场景与机位优先复用场景素材、Clean Plate、图层与空间资产，不得在每个关键帧中重新绘制整个场景。
+
+## 安装
+
+### ChatGPT 桌面版 / Codex
+
+在 Codex CLI 中添加这个 GitHub 插件市场：
+
+```bash
+codex plugin marketplace add shaobrad639-cpu/panda-video-continuity
+```
+
+然后：
+
+1. 重新启动 ChatGPT 桌面版或新建 Codex 会话。
+2. 打开 **Plugins**。
+3. 选择 **个人视频制作插件**。
+4. 安装 **Panda · 电影化 AI 视频制作**。
+5. 安装后新建对话再调用。
+
+也可以克隆本仓库，在仓库目录中启动 ChatGPT 桌面版或 Codex；插件清单位于 `.agents/plugins/marketplace.json`。
+
+## 调用
+
+- ChatGPT：输入 `@panda`，或直接描述视频制作任务。
+- Codex：输入 `$panda`，或从技能列表选择 Panda。
+
+示例：
+
+```text
+@panda 根据这份剧本建立场景计划、场景资产清单、镜头表和 Animatic 制作计划。
+```
+
+```text
+$panda 检查这些连续镜头的场景资产、空间关系、真实尾帧续接和剪辑连续性。
+```
+
+## 目录
+
+```text
+.agents/plugins/marketplace.json
+plugins/panda-video-continuity/
+  plugin.json
+  skills/panda/
+    SKILL.md
+    references/
+    assets/templates/
+    scripts/
+    tests/
+    examples/
+```
+
+## 验证
+
+```bash
+python3 -m unittest discover \
+  -s plugins/panda-video-continuity/skills/panda/tests \
+  -p 'test_*.py'
+```
+
+当前版本包含 43 项自动化测试。
+
+## 说明
+
+Panda 提供制作流程、模板、检查机制和质量门槛，不替代导演、摄影、表演、剪辑与声音方面的创作判断。可测量、可复现的问题可以阻断放行；审美和创作判断应记录为评审意见，由创作者最终决定。

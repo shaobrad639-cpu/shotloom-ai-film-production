@@ -1,0 +1,9 @@
+{
+  "asset_id": "SET-001_SPACE",
+  "version": "v002",
+  "kind": "spatial-layout",
+  "depth_m": 6.4,
+  "fixed_equipment": [
+    "EQ-MAIN"
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "schema_version": 11,
+  "shot": {
+    "project_id": "",
+    "sequence_id": "",
+    "scene_id": "",
+    "shot_id": "",
+    "setup_id": "",
+    "take_id": "",
+    "segment_id": "",
+    "segment_sequence_index": 1,
+    "continuity_mode": "EDITORIAL_SHOT",
+    "relation_from_previous": "SCENE_START",
+    "pass_version": "v001",
+    "status": "DRAFT",
+    "shot_purpose": "",
+    "duration_seconds": 0
+  },
+  "asset_baselines": {
+    "characters": [],
+    "scene": "",
+    "props": []
+  },
+  "asset_identity_lock": {
+    "status": "NOT_RUN",
+    "manifest_reference": "",
+    "manifest_digest_sha256": "",
+    "manifest_validation_reference": "",
+    "assets": []
+  },
+  "production_plan": {
+    "status": "NOT_RUN",
+    "project_brief_reference": "",
+    "editorial_intent": "",
+    "action_beats": [],
+    "model_risk_review_reference": "",
+    "visual_direction_reference": "",
+    "audio_intent": ""
+  },
+  "continuity": {
+    "status": "NOT_RUN",
+    "previous_shot_id": "",
+    "editorial_intent": "",
+    "axis_status": "NOT_RUN",
+    "eyeline_status": "NOT_RUN",
+    "screen_direction_status": "NOT_RUN",
+    "match_on_action_status": "NOT_RUN",
+    "lighting_color_status": "NOT_RUN",
+    "audio_bridge_status": "NOT_RUN",
+    "evidence": "",
+    "is_take_start": true,
+    "merge_with_previous_segment": false,
+    "editorial_cuts": 0,
+    "temporal_gap_seconds": 0,
+    "actual_tail_required": false,
+    "previous_tail_asset_version": "",
+    "previous_tail_validation_reference": "",
+    "previous_tail_window_reference": "",
+    "previous_tail_acceptance_status": "N/A",
+    "planned_keyframe_used_as_substitute": false,
+    "camera_end_to_start_status": "N/A",
+    "action_phase_status": "N/A",
+    "audio_phase_status": "N/A",
+    "environment_phase_status": "N/A"
+  },
+  "scene_asset_lock": {
+    "status": "NOT_RUN",
+    "scene_asset_bundle_reference": "",
+    "spatial_master_reference": "",
+    "production_method": "STRUCTURAL_ANCHOR_CHECK",
+    "background_geometry_or_render_reference": "",
+    "layer_manifest_reference": "",
+    "uncontrolled_scene_regeneration": false
+  },
+  "spatial_lock": {
+    "status": "NOT_RUN",
+    "reason": "",
+    "coordinate_system": {
+      "layout_version": "",
+      "origin": "",
+      "axes": "",
+      "unit": "m"
+    },
+    "fixed_equipment": [],
+    "relative_scale_checks": [],
+    "reachability_checks": []
+  },
+  "camera_plan": {
+    "status": "NOT_RUN",
+    "shot_size": "",
+    "camera_height_and_angle": "",
+    "focal_length_or_fov": "",
+    "capture_rate_and_shutter": "",
+    "exposure_and_white_balance": "",
+    "focus_plan": "",
+    "depth_of_field": "",
+    "start_framing": "",
+    "end_framing": "",
+    "position_moves": false,
+    "translation": "none",
+    "rotation": "none",
+    "lens_change": "none",
+    "path": "locked_position",
+    "direction": "none",
+    "speed_curve": "static",
+    "subject_lock": "",
+    "parallax_expected": "none",
+    "motivation": "",
+    "post_process": "none"
+  },
+  "picture_lock": {
+    "status": "NOT_RUN",
+    "mode": "STRUCTURAL_ANCHOR_CHECK",
+    "background_plate_reference": "",
+    "allowed_change_masks": [],
+    "protected_match_target": null,
+    "comparison_pairs": [],
+    "anchor_or_geometry_report_reference": "",
+    "uncontrolled_full_frame_regeneration": false
+  },
+  "environment_animation": {
+    "status": "N/A",
+    "reason": "intentional static environment",
+    "static_protected_assets": [],
+    "registered_regions": [],
+    "motion_direction": "",
+    "motion_intensity": "",
+    "entry_phase": "",
+    "exit_phase": "",
+    "freeze_check": "N/A",
+    "static_drift_check": "N/A",
+    "evidence": "",
+    "loop_reset_forbidden": true
+  },
+  "state_transition": {
+    "entry_state": "",
+    "action_beats": [],
+    "exit_state": ""
+  },
+  "constraints": {
+    "allowed_changes": [],
+    "prohibited_changes": [],
+    "critical_open_questions": [],
+    "approved_assumptions": [],
+    "new_assets": []
+  },
+  "prop_transitions": [],
+  "gates": {
+    "gate_1_script_edit_action": {"status": "NOT_RUN", "evidence": "", "reason": ""},
+    "gate_2_assets_scene_space_props": {"status": "NOT_RUN", "evidence": "", "reason": ""},
+    "gate_3_blocking_camera_sound": {"status": "NOT_RUN", "evidence": "", "reason": ""},
+    "gate_4_key_states_previs": {"status": "NOT_RUN", "evidence": "", "reason": ""},
+    "gate_5a_release": {"status": "NOT_RUN", "evidence": "", "reason": ""},
+    "gate_5b_acceptance": {"status": "NOT_RUN", "evidence": "", "reason": ""}
+  },
+  "keyframes": [],
+  "generation_handoff": {
+    "model_capability": "",
+    "reference_priority": [],
+    "motion_beats": [],
+    "positive_invariants": [],
+    "negative_constraints": [],
+    "audio_plan": "",
+    "output_specification": "",
+    "acceptance_criteria": []
+  },
+  "preflight_review": {
+    "status": "NOT_RUN",
+    "context_mode": "STANDARD_REVIEW",
+    "report_reference": "",
+    "script_visual_alignment": "NOT_RUN",
+    "asset_direction_check": "NOT_RUN",
+    "camera_editing_check": "NOT_RUN",
+    "physical_action_check": "NOT_RUN",
+    "sound_check": "NOT_RUN"
+  },
+  "cost_control": {
+    "status": "NOT_RUN",
+    "external_paid_generation": false,
+    "estimate_reference": "",
+    "user_spend_approval": "NOT_REQUIRED"
+  },
+  "retry_control": {
+    "current_round": 0,
+    "max_rounds": 3,
+    "same_defect_count": 0,
+    "same_defect_limit": 2,
+    "last_defect": "",
+    "repair_ladder_step": "",
+    "changed_production_condition": ""
+  },
+  "release": {
+    "references_locked": false,
+    "released_by": "",
+    "released_at": "",
+    "validator_result": "NOT_RUN",
+    "exceptions": []
+  },
+  "acceptance": {
+    "result": "NOT_RUN",
+    "accepted_asset_version": "",
+    "ledger_writeback": ""
+  },
+  "acceptance_sampling": {
+    "status": "NOT_RUN",
+    "interval_seconds": 0.4,
+    "contact_sheet_reference": "",
+    "boundary_frame_radius": 3,
+    "full_resolution_frame_checks": [],
+    "motion_review_status": "NOT_RUN",
+    "motion_review_evidence": "",
+    "audio_review_status": "NOT_RUN",
+    "audio_review_evidence": ""
+  }
+}

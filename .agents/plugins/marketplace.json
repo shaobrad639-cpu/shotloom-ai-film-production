@@ -1,0 +1,20 @@
+{
+  "name": "personal-video-production",
+  "interface": {
+    "displayName": "个人视频制作插件"
+  },
+  "plugins": [
+    {
+      "name": "panda-video-continuity",
+      "source": {
+        "source": "local",
+        "path": "./plugins/panda-video-continuity"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "schema_version": 11,
+  "shot": {
+    "project_id": "DEMO_EP01",
+    "sequence_id": "DEMO_EP01_SQ01",
+    "scene_id": "DEMO_EP01_SC01",
+    "shot_id": "DEMO_EP01_SH04",
+    "setup_id": "C2",
+    "take_id": "DEMO_EP01_SH04_TK01",
+    "segment_id": "",
+    "segment_sequence_index": 1,
+    "continuity_mode": "EDITORIAL_SHOT",
+    "relation_from_previous": "EDITORIAL_CUT",
+    "pass_version": "v003",
+    "status": "BLOCKED",
+    "shot_purpose": "主角把模块装入下一工位的接口",
+    "duration_seconds": 7
+  },
+  "asset_baselines": {
+    "characters": [
+      "CHAR-001_v003"
+    ],
+    "scene": "SET-001_v003",
+    "props": [
+      "PROP-MODULE-001_v002"
+    ]
+  },
+  "asset_identity_lock": {
+    "status": "NOT_RUN",
+    "manifest_reference": "DEMO_ASSET_MANIFEST_v003",
+    "manifest_digest_sha256": "036b18cc0486502a67a577e1155bea56c0cfdd2fc3a8f57406050994e42f3f89",
+    "manifest_validation_reference": "reports/manifest-v003.txt",
+    "assets": []
+  },
+  "production_plan": {
+    "status": "PASS",
+    "project_brief_reference": "DEMO_PROJECT_BRIEF_v002",
+    "editorial_intent": "连续观察模块解锁与取下，不隐藏接触过程",
+    "action_beats": [
+      "右手握住",
+      "旋转解锁",
+      "向下取出",
+      "稳定持有"
+    ],
+    "model_risk_review_reference": "DEMO_SH03_RISK_v002",
+    "visual_direction_reference": "DEMO_VISUAL_BIBLE_v001",
+    "audio_intent": "保留机械解锁声与稳定环境底"
+  },
+  "continuity": {
+    "status": "PASS",
+    "previous_shot_id": "DEMO_EP01_SH03",
+    "editorial_intent": "切到下一工位，动作待节拍确认",
+    "axis_status": "N/A",
+    "eyeline_status": "PASS",
+    "screen_direction_status": "PASS",
+    "match_on_action_status": "PASS",
+    "lighting_color_status": "PASS",
+    "audio_bridge_status": "PASS",
+    "evidence": "SG02 尾部窗口与 SG03 首帧逐项匹配",
+    "is_take_start": true,
+    "merge_with_previous_segment": false,
+    "editorial_cuts": 0,
+    "temporal_gap_seconds": 0,
+    "actual_tail_required": false,
+    "previous_tail_asset_version": "",
+    "previous_tail_validation_reference": "",
+    "previous_tail_window_reference": "",
+    "previous_tail_acceptance_status": "N/A",
+    "planned_keyframe_used_as_substitute": false,
+    "camera_end_to_start_status": "PASS",
+    "action_phase_status": "PASS",
+    "audio_phase_status": "PASS",
+    "environment_phase_status": "N/A"
+  },
+  "scene_asset_lock": {
+    "status": "PASS",
+    "scene_asset_bundle_reference": "SET-001_C2_BUNDLE_v003",
+    "spatial_master_reference": "SET-001_SPACE_v002",
+    "production_method": "EXACT_PLATE_COMPOSITE",
+    "background_geometry_or_render_reference": "SET-001_C2_PLATE_v003",
+    "layer_manifest_reference": "layer-manifest.md",
+    "uncontrolled_scene_regeneration": false
+  },
+  "spatial_lock": {
+    "status": "PASS",
+    "reason": "",
+    "coordinate_system": {
+      "layout_version": "SET-001_SPACE_v002",
+      "origin": "southwest floor corner",
+      "axes": "+x east, +y north, +z up",
+      "unit": "m"
+    },
+    "fixed_equipment": [
+      {
+        "id": "EQ-MAIN",
+        "position_m": [
+          3.2,
+          1.1,
+          0.9
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "dimensions_m": [
+          0.8,
+          0.55,
+          0.6
+        ],
+        "status": "PASS"
+      }
+    ],
+    "relative_scale_checks": [
+      {
+        "id": "EQ_MAIN_TO_CHARACTER",
+        "status": "PASS"
+      }
+    ],
+    "reachability_checks": [
+      {
+        "actor_id": "CHAR-001",
+        "target_id": "PROP-MODULE-001",
+        "status": "PASS",
+        "evidence": "0.288m < 0.38m，路径无遮挡且双脚有支撑"
+      }
+    ]
+  },
+  "camera_plan": {
+    "status": "PASS",
+    "shot_size": "medium",
+    "camera_height_and_angle": "1.45m eye-level three-quarter side",
+    "focal_length_or_fov": "50mm full-frame equivalent",
+    "capture_rate_and_shutter": "24fps, 180-degree shutter equivalent",
+    "exposure_and_white_balance": "locked exposure, 4300K white balance",
+    "focus_plan": "manual focus held on hands and module",
+    "depth_of_field": "hands and device interface readable",
+    "start_framing": "character and module visible in C2 composition",
+    "end_framing": "same composition with module in right hand",
+    "position_moves": false,
+    "translation": "none",
+    "rotation": "none",
+    "lens_change": "none",
+    "path": "locked_position",
+    "direction": "none",
+    "speed_curve": "static",
+    "subject_lock": "module interface remains in action-safe area",
+    "parallax_expected": "none",
+    "motivation": "continuous observation of hand-object contact",
+    "post_process": "none"
+  },
+  "picture_lock": {
+    "status": "NOT_RUN",
+    "mode": "N/A",
+    "background_plate_reference": "SET-001_C2_PLATE_v003",
+    "allowed_change_masks": [],
+    "protected_match_target": 1.0,
+    "comparison_pairs": [],
+    "anchor_or_geometry_report_reference": "",
+    "uncontrolled_full_frame_regeneration": false
+  },
+  "environment_animation": {
+    "status": "N/A",
+    "reason": "intentional static interior during this seven-second shot",
+    "static_protected_assets": [
+      "EQ-MAIN"
+    ],
+    "registered_regions": [],
+    "motion_direction": "",
+    "motion_intensity": "",
+    "entry_phase": "",
+    "exit_phase": "",
+    "freeze_check": "N/A",
+    "static_drift_check": "N/A",
+    "evidence": "shot design contains no continuous environmental motion",
+    "loop_reset_forbidden": true
+  },
+  "state_transition": {
+    "entry_state": "模块安装在设备接口，主角右手接近模块",
+    "action_beats": [
+      "握住",
+      "旋转解锁",
+      "向下取出",
+      "稳定持有"
+    ],
+    "exit_state": "模块离开接口并由主角右手持有"
+  },
+  "constraints": {
+    "allowed_changes": [
+      "角色右手与模块",
+      "接触阴影",
+      "必要遮挡"
+    ],
+    "prohibited_changes": [
+      "固定设备移动",
+      "新增道具",
+      "角色身份变化",
+      "动作重启"
+    ],
+    "critical_open_questions": [],
+    "approved_assumptions": [
+      "环境在该镜头内有意保持静止"
+    ],
+    "new_assets": []
+  },
+  "prop_transitions": [
+    {
+      "id": "PROP-MODULE-001",
+      "entry_state": "installed",
+      "action": "unlock and remove",
+      "exit_state": "held in right hand"
+    }
+  ],
+  "gates": {
+    "gate_1_script_edit_action": {
+      "status": "PASS",
+      "evidence": "镜头目的与动作节拍已确认",
+      "reason": ""
+    },
+    "gate_2_assets_scene_space_props": {
+      "status": "BLOCKED",
+      "evidence": "",
+      "reason": "工位 C3 的空间母版与道具交接状态尚未批准"
+    },
+    "gate_3_blocking_camera_sound": {
+      "status": "PASS",
+      "evidence": "C3 机位与声音桥设计已通过",
+      "reason": ""
+    },
+    "gate_4_key_states_previs": {
+      "status": "NOT_RUN",
+      "evidence": "",
+      "reason": ""
+    },
+    "gate_5a_release": {
+      "status": "NOT_RUN",
+      "evidence": "",
+      "reason": ""
+    },
+    "gate_5b_acceptance": {
+      "status": "NOT_RUN",
+      "evidence": "",
+      "reason": ""
+    }
+  },
+  "keyframes": [
+    {
+      "role": "first",
+      "timecode": "00:00:00:00",
+      "state": "inherits accepted SG02 tail",
+      "reference": "SH03_FIRST_v003"
+    },
+    {
+      "role": "contact",
+      "timecode": "00:00:03:12",
+      "state": "right hand unlocks module",
+      "reference": "SH03_CONTACT_v003"
+    },
+    {
+      "role": "last",
+      "timecode": "00:00:07:00",
+      "state": "module held in right hand",
+      "reference": "SH03_LAST_v003"
+    }
+  ],
+  "generation_handoff": {
+    "model_capability": "multi-keyframe image-to-video with fixed first frame",
+    "reference_priority": [
+      "asset baselines",
+      "accepted SG02 actual tail",
+      "approved key states"
+    ],
+    "motion_beats": [
+      "grip",
+      "quarter-turn unlock",
+      "pull down",
+      "settle"
+    ],
+    "positive_invariants": [
+      "fixed equipment remains anchored",
+      "module remains single"
+    ],
+    "negative_constraints": [
+      "no camera movement",
+      "no new props",
+      "no action restart"
+    ],
+    "audio_plan": "continuous room tone with one synchronized mechanical release",
+    "output_specification": "7s, 24fps, 1920x1080, Rec.709",
+    "acceptance_criteria": [
+      "contact readable",
+      "segment seam invisible",
+      "no asset drift"
+    ]
+  },
+  "preflight_review": {
+    "status": "PASS",
+    "context_mode": "COLD_REVIEW",
+    "report_reference": "independent-preflight-review.md",
+    "script_visual_alignment": "PASS",
+    "asset_direction_check": "PASS",
+    "camera_editing_check": "PASS",
+    "physical_action_check": "PASS",
+    "sound_check": "PASS"
+  },
+  "cost_control": {
+    "status": "PASS",
+    "external_paid_generation": false,
+    "estimate_reference": "",
+    "user_spend_approval": "NOT_REQUIRED"
+  },
+  "retry_control": {
+    "current_round": 0,
+    "max_rounds": 3,
+    "same_defect_count": 0,
+    "same_defect_limit": 2,
+    "last_defect": "",
+    "repair_ladder_step": "",
+    "changed_production_condition": ""
+  },
+  "release": {
+    "references_locked": false,
+    "released_by": "",
+    "released_at": "",
+    "validator_result": "NOT_RUN",
+    "validator_version": "",
+    "validated_at": "",
+    "exceptions": []
+  },
+  "acceptance": {
+    "result": "NOT_RUN",
+    "accepted_asset_version": "",
+    "ledger_writeback": ""
+  },
+  "acceptance_sampling": {
+    "status": "NOT_RUN",
+    "interval_seconds": 0.4,
+    "contact_sheet_reference": "",
+    "boundary_frame_radius": 3,
+    "full_resolution_frame_checks": [],
+    "motion_review_status": "NOT_RUN",
+    "motion_review_evidence": "",
+    "audio_review_status": "NOT_RUN",
+    "audio_review_evidence": ""
+  }
+}

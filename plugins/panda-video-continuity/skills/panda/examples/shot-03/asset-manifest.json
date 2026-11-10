@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "manifest_id": "DEMO_ASSET_MANIFEST",
+  "manifest_version": "v003",
+  "status": "ACCEPTED",
+  "assets": [
+    {
+      "asset_id": "SET-001",
+      "asset_type": "SCENE",
+      "version": "v003",
+      "reference": "SET-001_v003",
+      "file": "assets/set-001-scene-v003.json",
+      "sha256": "7655471f6923d0a324c627f4579394ad7937f48ff248de18a033ebc4bfadd9e5",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "SET-001_C2_BUNDLE",
+      "asset_type": "SCENE_BUNDLE",
+      "version": "v003",
+      "reference": "SET-001_C2_BUNDLE_v003",
+      "file": "assets/set-c2-bundle-v003.json",
+      "sha256": "0164e1ddace34c9c4251be7e45e69005cdbf02e6d66080b409babbb68040e7b2",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "SET-001_C2_PLATE",
+      "asset_type": "BACKGROUND_PLATE",
+      "version": "v003",
+      "reference": "SET-001_C2_PLATE_v003",
+      "file": "assets/set-c2-plate-v003.png",
+      "sha256": "0c32b7d6d33e049e0a68c693a65ff1b6fdc3645cd150f3c154a3a1fd6835df9e",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "SET-001_SPACE",
+      "asset_type": "SPATIAL_LAYOUT",
+      "version": "v002",
+      "reference": "SET-001_SPACE_v002",
+      "file": "assets/set-001-space-v002.json",
+      "sha256": "80c74d609516715a99d4b6fa41c14f695be07e62a4578bcdbb0cc0359879e789",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "CHAR-001",
+      "asset_type": "CHARACTER",
+      "version": "v003",
+      "reference": "CHAR-001_v003",
+      "file": "assets/char-001-v003.png",
+      "sha256": "046ca0ae828b40cf8df8e6a025d4a3754465da6b8954a7876643ce6abfdfd235",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "PROP-MODULE-001",
+      "asset_type": "PROP",
+      "version": "v002",
+      "reference": "PROP-MODULE-001_v002",
+      "file": "assets/prop-module-001-v002.png",
+      "sha256": "af95d0f2533cc1ca5cf9e178a8d6c549aaa3c481c1967c29c2d963af91c8231f",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "MASK_SH03_FIRST_LAST",
+      "asset_type": "ALLOWED_CHANGE_MASK",
+      "version": "v002",
+      "reference": "MASK_SH03_FIRST_LAST_v002",
+      "file": "assets/mask-sh03-first-last-v002.png",
+      "sha256": "92aad77b0f078e255f404d97d7566a33701a498d8a3ae2c6ba6752047a9743ff",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "SH03_FIRST",
+      "asset_type": "KEYFRAME",
+      "version": "v003",
+      "reference": "SH03_FIRST_v003",
+      "file": "assets/sh03-first-v003.png",
+      "sha256": "b61d57914745c933c21d2fc4a6bda930f40d848bcb1c895844f52a94ce07d4d3",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "SH03_CONTACT",
+      "asset_type": "KEYFRAME",
+      "version": "v003",
+      "reference": "SH03_CONTACT_v003",
+      "file": "assets/sh03-contact-v003.png",
+      "sha256": "d91d9bbcabe779d2afcc72dda1ac1bdd9547a791c1911549aa00c4b8b080294b",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "SH03_LAST",
+      "asset_type": "KEYFRAME",
+      "version": "v003",
+      "reference": "SH03_LAST_v003",
+      "file": "assets/sh03-last-v003.png",
+      "sha256": "203acec0d53c60a0062c3afeb5001b308e356d64f50a9913b5509d91933eb886",
+      "status": "ACCEPTED"
+    },
+    {
+      "asset_id": "DEMO_EP01_SH03_SG02_tail",
+      "asset_type": "ACTUAL_RENDERED_TAIL",
+      "version": "v002",
+      "reference": "DEMO_EP01_SH03_SG02_tail_v002",
+      "file": "assets/demo-ep01-sh03-sg02-tail-v002.png",
+      "sha256": "418ba348db82f47a16424c1e68b3b5636c1b70057466b85681da9e5650680da1",
+      "status": "ACCEPTED"
+    }
+  ]
+}

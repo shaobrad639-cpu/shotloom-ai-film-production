@@ -1,0 +1,455 @@
+{
+  "schema_version": 11,
+  "shot": {
+    "project_id": "DEMO_EP01",
+    "sequence_id": "DEMO_EP01_SQ01",
+    "scene_id": "DEMO_EP01_SC01",
+    "shot_id": "DEMO_EP01_SH03",
+    "setup_id": "C2",
+    "take_id": "DEMO_EP01_SH03_TK01",
+    "segment_id": "DEMO_EP01_SH03_SG03",
+    "segment_sequence_index": 3,
+    "continuity_mode": "CONTINUOUS_TAKE",
+    "relation_from_previous": "CONTINUOUS_SEGMENT",
+    "pass_version": "v011",
+    "status": "GREENLIT",
+    "shot_purpose": "主角从主设备取下模块，进入下一操作节拍",
+    "duration_seconds": 7
+  },
+  "asset_baselines": {
+    "characters": [
+      "CHAR-001_v003"
+    ],
+    "scene": "SET-001_v003",
+    "props": [
+      "PROP-MODULE-001_v002"
+    ]
+  },
+  "asset_identity_lock": {
+    "status": "PASS",
+    "manifest_reference": "DEMO_ASSET_MANIFEST_v003",
+    "manifest_digest_sha256": "036b18cc0486502a67a577e1155bea56c0cfdd2fc3a8f57406050994e42f3f89",
+    "manifest_validation_reference": "reports/manifest-v003.txt",
+    "assets": [
+      {
+        "asset_id": "SET-001",
+        "asset_type": "SCENE",
+        "version": "v003",
+        "reference": "SET-001_v003",
+        "file": "assets/set-001-scene-v003.json",
+        "sha256": "7655471f6923d0a324c627f4579394ad7937f48ff248de18a033ebc4bfadd9e5",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "SET-001_C2_BUNDLE",
+        "asset_type": "SCENE_BUNDLE",
+        "version": "v003",
+        "reference": "SET-001_C2_BUNDLE_v003",
+        "file": "assets/set-c2-bundle-v003.json",
+        "sha256": "0164e1ddace34c9c4251be7e45e69005cdbf02e6d66080b409babbb68040e7b2",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "SET-001_C2_PLATE",
+        "asset_type": "BACKGROUND_PLATE",
+        "version": "v003",
+        "reference": "SET-001_C2_PLATE_v003",
+        "file": "assets/set-c2-plate-v003.png",
+        "sha256": "0c32b7d6d33e049e0a68c693a65ff1b6fdc3645cd150f3c154a3a1fd6835df9e",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "SET-001_SPACE",
+        "asset_type": "SPATIAL_LAYOUT",
+        "version": "v002",
+        "reference": "SET-001_SPACE_v002",
+        "file": "assets/set-001-space-v002.json",
+        "sha256": "80c74d609516715a99d4b6fa41c14f695be07e62a4578bcdbb0cc0359879e789",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "CHAR-001",
+        "asset_type": "CHARACTER",
+        "version": "v003",
+        "reference": "CHAR-001_v003",
+        "file": "assets/char-001-v003.png",
+        "sha256": "046ca0ae828b40cf8df8e6a025d4a3754465da6b8954a7876643ce6abfdfd235",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "PROP-MODULE-001",
+        "asset_type": "PROP",
+        "version": "v002",
+        "reference": "PROP-MODULE-001_v002",
+        "file": "assets/prop-module-001-v002.png",
+        "sha256": "af95d0f2533cc1ca5cf9e178a8d6c549aaa3c481c1967c29c2d963af91c8231f",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "MASK_SH03_FIRST_LAST",
+        "asset_type": "ALLOWED_CHANGE_MASK",
+        "version": "v002",
+        "reference": "MASK_SH03_FIRST_LAST_v002",
+        "file": "assets/mask-sh03-first-last-v002.png",
+        "sha256": "92aad77b0f078e255f404d97d7566a33701a498d8a3ae2c6ba6752047a9743ff",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "SH03_FIRST",
+        "asset_type": "KEYFRAME",
+        "version": "v003",
+        "reference": "SH03_FIRST_v003",
+        "file": "assets/sh03-first-v003.png",
+        "sha256": "b61d57914745c933c21d2fc4a6bda930f40d848bcb1c895844f52a94ce07d4d3",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "SH03_CONTACT",
+        "asset_type": "KEYFRAME",
+        "version": "v003",
+        "reference": "SH03_CONTACT_v003",
+        "file": "assets/sh03-contact-v003.png",
+        "sha256": "d91d9bbcabe779d2afcc72dda1ac1bdd9547a791c1911549aa00c4b8b080294b",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "SH03_LAST",
+        "asset_type": "KEYFRAME",
+        "version": "v003",
+        "reference": "SH03_LAST_v003",
+        "file": "assets/sh03-last-v003.png",
+        "sha256": "203acec0d53c60a0062c3afeb5001b308e356d64f50a9913b5509d91933eb886",
+        "status": "ACCEPTED"
+      },
+      {
+        "asset_id": "DEMO_EP01_SH03_SG02_tail",
+        "asset_type": "ACTUAL_RENDERED_TAIL",
+        "version": "v002",
+        "reference": "DEMO_EP01_SH03_SG02_tail_v002",
+        "file": "assets/demo-ep01-sh03-sg02-tail-v002.png",
+        "sha256": "418ba348db82f47a16424c1e68b3b5636c1b70057466b85681da9e5650680da1",
+        "status": "ACCEPTED"
+      }
+    ]
+  },
+  "production_plan": {
+    "status": "PASS",
+    "project_brief_reference": "DEMO_PROJECT_BRIEF_v002",
+    "editorial_intent": "连续观察模块解锁与取下，不隐藏接触过程",
+    "action_beats": [
+      "右手握住",
+      "旋转解锁",
+      "向下取出",
+      "稳定持有"
+    ],
+    "model_risk_review_reference": "DEMO_SH03_RISK_v002",
+    "visual_direction_reference": "DEMO_VISUAL_BIBLE_v001",
+    "audio_intent": "保留机械解锁声与稳定环境底"
+  },
+  "continuity": {
+    "status": "PASS",
+    "previous_shot_id": "DEMO_EP01_SH03",
+    "editorial_intent": "同一长镜头的第三个技术分段，无剪辑点",
+    "axis_status": "N/A",
+    "eyeline_status": "PASS",
+    "screen_direction_status": "PASS",
+    "match_on_action_status": "PASS",
+    "lighting_color_status": "PASS",
+    "audio_bridge_status": "PASS",
+    "evidence": "SG02 尾部窗口与 SG03 首帧逐项匹配",
+    "is_take_start": false,
+    "merge_with_previous_segment": true,
+    "editorial_cuts": 0,
+    "temporal_gap_seconds": 0,
+    "actual_tail_required": true,
+    "previous_tail_asset_version": "DEMO_EP01_SH03_SG02_tail_v002",
+    "previous_tail_validation_reference": "actual-tail-validation.md",
+    "previous_tail_window_reference": "DEMO_EP01_SH03_SG02_tail-window_v002",
+    "previous_tail_acceptance_status": "PASS",
+    "planned_keyframe_used_as_substitute": false,
+    "camera_end_to_start_status": "PASS",
+    "action_phase_status": "PASS",
+    "audio_phase_status": "PASS",
+    "environment_phase_status": "N/A"
+  },
+  "scene_asset_lock": {
+    "status": "PASS",
+    "scene_asset_bundle_reference": "SET-001_C2_BUNDLE_v003",
+    "spatial_master_reference": "SET-001_SPACE_v002",
+    "production_method": "EXACT_PLATE_COMPOSITE",
+    "background_geometry_or_render_reference": "SET-001_C2_PLATE_v003",
+    "layer_manifest_reference": "layer-manifest.md",
+    "uncontrolled_scene_regeneration": false
+  },
+  "spatial_lock": {
+    "status": "PASS",
+    "reason": "",
+    "coordinate_system": {
+      "layout_version": "SET-001_SPACE_v002",
+      "origin": "southwest floor corner",
+      "axes": "+x east, +y north, +z up",
+      "unit": "m"
+    },
+    "fixed_equipment": [
+      {
+        "id": "EQ-MAIN",
+        "position_m": [
+          3.2,
+          1.1,
+          0.9
+        ],
+        "rotation_deg": [
+          0,
+          0,
+          0
+        ],
+        "dimensions_m": [
+          0.8,
+          0.55,
+          0.6
+        ],
+        "status": "PASS"
+      }
+    ],
+    "relative_scale_checks": [
+      {
+        "id": "EQ_MAIN_TO_CHARACTER",
+        "status": "PASS"
+      }
+    ],
+    "reachability_checks": [
+      {
+        "actor_id": "CHAR-001",
+        "target_id": "PROP-MODULE-001",
+        "status": "PASS",
+        "evidence": "0.288m < 0.38m，路径无遮挡且双脚有支撑"
+      }
+    ]
+  },
+  "camera_plan": {
+    "status": "PASS",
+    "shot_size": "medium",
+    "camera_height_and_angle": "1.45m eye-level three-quarter side",
+    "focal_length_or_fov": "50mm full-frame equivalent",
+    "capture_rate_and_shutter": "24fps, 180-degree shutter equivalent",
+    "exposure_and_white_balance": "locked exposure, 4300K white balance",
+    "focus_plan": "manual focus held on hands and module",
+    "depth_of_field": "hands and device interface readable",
+    "start_framing": "character and module visible in C2 composition",
+    "end_framing": "same composition with module in right hand",
+    "position_moves": false,
+    "translation": "none",
+    "rotation": "none",
+    "lens_change": "none",
+    "path": "locked_position",
+    "direction": "none",
+    "speed_curve": "static",
+    "subject_lock": "module interface remains in action-safe area",
+    "parallax_expected": "none",
+    "motivation": "continuous observation of hand-object contact",
+    "post_process": "none"
+  },
+  "picture_lock": {
+    "status": "PASS",
+    "mode": "EXACT_PLATE_COMPOSITE",
+    "background_plate_reference": "SET-001_C2_PLATE_v003",
+    "allowed_change_masks": [
+      "MASK_SH03_FIRST_LAST_v002"
+    ],
+    "protected_match_target": 1.0,
+    "comparison_pairs": [
+      {
+        "baseline": "SH03_FIRST_v003",
+        "candidate": "SH03_LAST_v003",
+        "protected_match_ratio": 1.0,
+        "changed_protected_pixels": 0
+      }
+    ],
+    "anchor_or_geometry_report_reference": "",
+    "uncontrolled_full_frame_regeneration": false
+  },
+  "environment_animation": {
+    "status": "N/A",
+    "reason": "intentional static interior during this seven-second shot",
+    "static_protected_assets": [
+      "EQ-MAIN"
+    ],
+    "registered_regions": [],
+    "motion_direction": "",
+    "motion_intensity": "",
+    "entry_phase": "",
+    "exit_phase": "",
+    "freeze_check": "N/A",
+    "static_drift_check": "N/A",
+    "evidence": "shot design contains no continuous environmental motion",
+    "loop_reset_forbidden": true
+  },
+  "state_transition": {
+    "entry_state": "模块安装在设备接口，主角右手接近模块",
+    "action_beats": [
+      "握住",
+      "旋转解锁",
+      "向下取出",
+      "稳定持有"
+    ],
+    "exit_state": "模块离开接口并由主角右手持有"
+  },
+  "constraints": {
+    "allowed_changes": [
+      "角色右手与模块",
+      "接触阴影",
+      "必要遮挡"
+    ],
+    "prohibited_changes": [
+      "固定设备移动",
+      "新增道具",
+      "角色身份变化",
+      "动作重启"
+    ],
+    "critical_open_questions": [],
+    "approved_assumptions": [
+      "环境在该镜头内有意保持静止"
+    ],
+    "new_assets": []
+  },
+  "prop_transitions": [
+    {
+      "id": "PROP-MODULE-001",
+      "entry_state": "installed",
+      "action": "unlock and remove",
+      "exit_state": "held in right hand"
+    }
+  ],
+  "gates": {
+    "gate_1_script_edit_action": {
+      "status": "PASS",
+      "evidence": "动作四节拍可在七秒完成",
+      "reason": ""
+    },
+    "gate_2_assets_scene_space_props": {
+      "status": "PASS",
+      "evidence": "资产、空间与道具因果闭合",
+      "reason": ""
+    },
+    "gate_3_blocking_camera_sound": {
+      "status": "PASS",
+      "evidence": "C2 固定 Setup、触达与机械声设计通过",
+      "reason": ""
+    },
+    "gate_4_key_states_previs": {
+      "status": "PASS",
+      "evidence": "首尾及接触状态、Animatic 与接缝通过",
+      "reason": ""
+    },
+    "gate_5a_release": {
+      "status": "PASS",
+      "evidence": "交接包与机器校验通过",
+      "reason": ""
+    },
+    "gate_5b_acceptance": {
+      "status": "NOT_RUN",
+      "evidence": "",
+      "reason": ""
+    }
+  },
+  "keyframes": [
+    {
+      "role": "first",
+      "timecode": "00:00:00:00",
+      "state": "inherits accepted SG02 tail",
+      "reference": "SH03_FIRST_v003"
+    },
+    {
+      "role": "contact",
+      "timecode": "00:00:03:12",
+      "state": "right hand unlocks module",
+      "reference": "SH03_CONTACT_v003"
+    },
+    {
+      "role": "last",
+      "timecode": "00:00:07:00",
+      "state": "module held in right hand",
+      "reference": "SH03_LAST_v003"
+    }
+  ],
+  "generation_handoff": {
+    "model_capability": "multi-keyframe image-to-video with fixed first frame",
+    "reference_priority": [
+      "asset baselines",
+      "accepted SG02 actual tail",
+      "approved key states"
+    ],
+    "motion_beats": [
+      "grip",
+      "quarter-turn unlock",
+      "pull down",
+      "settle"
+    ],
+    "positive_invariants": [
+      "fixed equipment remains anchored",
+      "module remains single"
+    ],
+    "negative_constraints": [
+      "no camera movement",
+      "no new props",
+      "no action restart"
+    ],
+    "audio_plan": "continuous room tone with one synchronized mechanical release",
+    "output_specification": "7s, 24fps, 1920x1080, Rec.709",
+    "acceptance_criteria": [
+      "contact readable",
+      "segment seam invisible",
+      "no asset drift"
+    ]
+  },
+  "preflight_review": {
+    "status": "PASS",
+    "context_mode": "COLD_REVIEW",
+    "report_reference": "independent-preflight-review.md",
+    "script_visual_alignment": "PASS",
+    "asset_direction_check": "PASS",
+    "camera_editing_check": "PASS",
+    "physical_action_check": "PASS",
+    "sound_check": "PASS"
+  },
+  "cost_control": {
+    "status": "PASS",
+    "external_paid_generation": false,
+    "estimate_reference": "",
+    "user_spend_approval": "NOT_REQUIRED"
+  },
+  "retry_control": {
+    "current_round": 0,
+    "max_rounds": 3,
+    "same_defect_count": 0,
+    "same_defect_limit": 2,
+    "last_defect": "",
+    "repair_ladder_step": "",
+    "changed_production_condition": ""
+  },
+  "release": {
+    "references_locked": true,
+    "released_by": "continuity supervisor",
+    "released_at": "2026-11-10T02:00:00Z",
+    "validator_result": "PASS",
+    "validator_version": "2.3.0",
+    "validated_at": "2026-11-10T03:28:56.275101+00:00",
+    "exceptions": []
+  },
+  "acceptance": {
+    "result": "NOT_RUN",
+    "accepted_asset_version": "",
+    "ledger_writeback": ""
+  },
+  "acceptance_sampling": {
+    "status": "NOT_RUN",
+    "interval_seconds": 0.4,
+    "contact_sheet_reference": "",
+    "boundary_frame_radius": 3,
+    "full_resolution_frame_checks": [],
+    "motion_review_status": "NOT_RUN",
+    "motion_review_evidence": "",
+    "audio_review_status": "NOT_RUN",
+    "audio_review_evidence": ""
+  }
+}

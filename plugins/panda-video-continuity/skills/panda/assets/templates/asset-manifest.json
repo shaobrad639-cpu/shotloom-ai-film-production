@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "manifest_id": "",
+  "manifest_version": "v001",
+  "status": "DRAFT",
+  "assets": [
+    {
+      "asset_id": "",
+      "asset_type": "",
+      "version": "",
+      "reference": "",
+      "file": "",
+      "sha256": "",
+      "status": "DRAFT"
+    }
+  ]
+}

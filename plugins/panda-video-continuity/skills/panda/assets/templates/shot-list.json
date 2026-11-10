@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "project_id": "",
+  "shot_list_version": "v001",
+  "timeline_frame_rate": "24/1",
+  "status": "DRAFT",
+  "shots": [
+    {
+      "sequence_id": "SEQ01",
+      "scene_id": "SC01",
+      "beat_ids": ["BT01"],
+      "shot_id": "SH01",
+      "setup_id": "C1",
+      "coverage_role": "MASTER",
+      "purpose": "",
+      "continuity_mode": "EDITORIAL_SHOT",
+      "target_duration_frames": 0,
+      "head_handle_frames": 0,
+      "tail_handle_frames": 0,
+      "shot_size": "",
+      "camera_angle_and_height": "",
+      "lens_or_fov": "",
+      "camera_motion": "",
+      "blocking_and_action": "",
+      "dialogue_and_sound": "",
+      "transition_in": "CUT",
+      "transition_out": "CUT",
+      "storyboard_reference": "",
+      "model_risks": [],
+      "status": "PLANNED"
+    }
+  ]
+}

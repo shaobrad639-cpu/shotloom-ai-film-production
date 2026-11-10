@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "project_id": "",
+  "scene_id": "SC01",
+  "package_id": "SC01_ASSET",
+  "package_version": "v001",
+  "stage": "LAYOUT",
+  "status": "DRAFT",
+  "source_scene_plan_version": "v001",
+  "production_method": "STRUCTURAL_ANCHOR_CHECK",
+  "technical_baseline": {
+    "aspect_ratio": "",
+    "resolution": "",
+    "color_space": ""
+  },
+  "spatial_master": {
+    "layout_reference": "",
+    "layout_version": "",
+    "coordinate_origin": "",
+    "axis_convention": "",
+    "unit": "",
+    "key_dimensions": [],
+    "fixed_equipment": [],
+    "fixed_equipment_status": "NOT_RUN",
+    "reachability_and_blocking_evidence": ""
+  },
+  "camera_setups": [
+    {
+      "setup_id": "C1",
+      "position_and_orientation": "",
+      "lens_or_fov": "",
+      "visible_area": "",
+      "status": "PLANNED"
+    }
+  ],
+  "picture_assets": {
+    "scene_master_reference": "",
+    "clean_plate_reference": "",
+    "layer_manifest_reference": "",
+    "depth_or_geometry_reference": "",
+    "occlusion_assets": [],
+    "allowed_change_mask_reference": ""
+  },
+  "environment": {
+    "static_regions": [],
+    "dynamic_regions": [],
+    "light_state_reference": "",
+    "look_reference": ""
+  },
+  "asset_manifest": {
+    "manifest_id": "",
+    "manifest_digest_sha256": ""
+  },
+  "asset_refs": [],
+  "unresolved_items": [],
+  "approval": {
+    "status": "NOT_RUN",
+    "reviewer": "",
+    "reviewed_at": "",
+    "evidence": ""
+  }
+}

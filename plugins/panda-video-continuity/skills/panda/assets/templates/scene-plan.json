@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "project_id": "",
+  "screenplay_version": "",
+  "scene_id": "SC01",
+  "plan_version": "v001",
+  "status": "DRAFT",
+  "purpose": "",
+  "entry_state": "",
+  "exit_state": "",
+  "emotion_arc": "",
+  "target_duration_seconds": 0,
+  "beat_ids": ["BT01"],
+  "blocking_reference": "",
+  "axis_and_screen_direction": "",
+  "lighting_state_reference": "",
+  "sound_strategy": "",
+  "coverage_plan": [
+    {
+      "coverage_role": "MASTER",
+      "purpose": "",
+      "required": true
+    }
+  ],
+  "planned_shot_ids": ["SH01"],
+  "risks": [],
+  "approval": {
+    "status": "NOT_RUN",
+    "reviewer": "",
+    "reviewed_at": "",
+    "evidence": ""
+  }
+}

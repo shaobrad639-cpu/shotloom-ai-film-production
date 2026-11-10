@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "project_id": "",
+  "animatic_version": "v001",
+  "shot_list_version": "v001",
+  "timeline_frame_rate": "24/1",
+  "timeline_start_timecode": "01:00:00:00",
+  "status": "DRAFT",
+  "target_duration_frames": 0,
+  "clips": [
+    {
+      "shot_id": "SH01",
+      "source_reference": "",
+      "timeline_in_frame": 0,
+      "timeline_out_frame_exclusive": 0,
+      "source_in_frame": 0,
+      "source_out_frame_exclusive": 0,
+      "head_handle_frames": 0,
+      "tail_handle_frames": 0,
+      "video_track": "V1",
+      "audio_tracks": [],
+      "transition_in": "CUT",
+      "transition_out": "CUT",
+      "markers": []
+    }
+  ],
+  "audio_plan": {
+    "dialogue_reference": "",
+    "room_tone_reference": "",
+    "music_reference": "",
+    "temporary_mix_reference": ""
+  },
+  "review": {
+    "story_readability": "NOT_RUN",
+    "timing_and_pacing": "NOT_RUN",
+    "performance_space": "NOT_RUN",
+    "audio_continuity": "NOT_RUN",
+    "coverage_complete": "NOT_RUN",
+    "evidence": ""
+  }
+}
