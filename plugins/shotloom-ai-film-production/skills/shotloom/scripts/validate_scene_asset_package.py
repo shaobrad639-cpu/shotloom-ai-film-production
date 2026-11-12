@@ -163,6 +163,8 @@ def validate(
         errors.append("picture_assets: required object")
         picture = {}
     require_text(picture, "scene_master_reference", "picture_assets", errors)
+    require_text(picture, "scene_master_output_contract_reference", "picture_assets", errors)
+    require_text(picture, "scene_master_output_contract_validation_reference", "picture_assets", errors)
     if package.get("production_method") == "EXACT_PLATE_COMPOSITE":
         require_text(picture, "clean_plate_reference", "picture_assets", errors)
         require_text(picture, "allowed_change_mask_reference", "picture_assets", errors)

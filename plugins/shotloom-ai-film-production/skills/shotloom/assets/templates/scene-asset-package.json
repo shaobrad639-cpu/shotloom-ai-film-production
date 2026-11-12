@@ -35,6 +35,8 @@
   ],
   "picture_assets": {
     "scene_master_reference": "",
+    "scene_master_output_contract_reference": "",
+    "scene_master_output_contract_validation_reference": "",
     "clean_plate_reference": "",
     "layer_manifest_reference": "",
     "depth_or_geometry_reference": "",

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "contract_id": "",
+  "project_id": "",
+  "scene_id": "",
+  "shot_id": "",
+  "status": "DRAFT",
+  "deliverable_type": "CLEAN_PLATE",
+  "asset_scope": "INDEPENDENT_ASSET",
+  "required_elements": [],
+  "forbidden_elements": [],
+  "background_mode": "SCENE",
+  "alpha_required": false,
+  "baked_elements_allowed": [],
+  "layer_role": "BACKGROUND",
+  "isolation_required": true,
+  "aspect_ratio": "",
+  "resolution": "",
+  "color_space": "",
+  "file_format": "",
+  "text_policy": "FORBIDDEN",
+  "reference_priority": [],
+  "evidence": "",
+  "approval": {
+    "status": "NOT_RUN",
+    "reviewer": "",
+    "reviewed_at": "",
+    "evidence": ""
+  }
+}

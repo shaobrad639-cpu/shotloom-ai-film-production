@@ -1,5 +1,5 @@
 {
-  "schema_version": 12,
+  "schema_version": 13,
   "shot": {
     "project_id": "DEMO_EP01",
     "sequence_id": "DEMO_EP01_SQ01",
@@ -387,6 +387,9 @@
   ],
   "generation_handoff": {
     "model_capability": "multi-keyframe image-to-video with fixed first frame",
+    "output_contract_reference": "video-output-contract.json",
+    "output_contract_validation_reference": "DEMO_EP01_SH03_VIDEO_CONTRACT_CHECK_PASS",
+    "deliverable_type": "VIDEO_SHOT",
     "reference_priority": [
       "asset baselines",
       "accepted SG02 actual tail",
@@ -421,6 +424,7 @@
     "report_reference": "independent-preflight-review.md",
     "script_visual_alignment": "PASS",
     "asset_direction_check": "PASS",
+    "output_contract_check": "PASS",
     "camera_editing_check": "PASS",
     "physical_action_check": "PASS",
     "sound_check": "PASS"
@@ -462,6 +466,8 @@
     "full_resolution_frame_checks": [],
     "motion_review_status": "NOT_RUN",
     "motion_review_evidence": "",
+    "deliverable_identity_status": "NOT_RUN",
+    "deliverable_identity_evidence": "",
     "audio_review_status": "NOT_RUN",
     "audio_review_evidence": ""
   }

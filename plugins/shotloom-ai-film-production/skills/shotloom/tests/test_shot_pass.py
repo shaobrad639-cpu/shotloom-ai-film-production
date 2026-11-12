@@ -1,4 +1,4 @@
-"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.4.0)."""
+"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.5.0)."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ class ShotPassTests(unittest.TestCase):
         self.mutate(lambda data: data["release"].update({"validator_version": "2.0.0"}))
         blocked = self.release()
         self.assertEqual(blocked.returncode, 1)
-        self.assertIn("expected 2.4.0", blocked.stdout)
+        self.assertIn("expected 2.5.0", blocked.stdout)
 
         result = self.release("--restamp")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -168,7 +168,7 @@ class ShotPassTests(unittest.TestCase):
         result = self.release("--json")
         payload = json.loads(result.stdout)
         self.assertEqual(payload["status"], "PASS")
-        self.assertEqual(payload["validator_version"], "2.4.0")
+        self.assertEqual(payload["validator_version"], "2.5.0")
 
     def test_stamp_writes_validator_metadata(self) -> None:
         self.mutate(lambda data: data["shot"].update({"status": "READY_FOR_RELEASE"}))
@@ -176,7 +176,7 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         data = load_json(self.pass_file)
         self.assertEqual(data["shot"]["status"], "GREENLIT")
-        self.assertEqual(data["release"]["validator_version"], "2.4.0")
+        self.assertEqual(data["release"]["validator_version"], "2.5.0")
         self.assertEqual(data["release"]["validator_result"], "PASS")
 
 
@@ -252,6 +252,21 @@ class RuleTests(unittest.TestCase):
         errors: list[str] = []
         vsp.validate_retry(self.data, errors)
         self.assertIn("retry_control: same-defect fuse is open", errors)
+
+    def test_formal_shot_requires_output_contract(self) -> None:
+        self.data["generation_handoff"]["output_contract_reference"] = ""
+        errors: list[str] = []
+        vsp.validate_release_inputs(self.data, errors)
+        self.assertIn("generation_handoff.output_contract_reference: required", errors)
+
+    def test_formal_shot_rejects_wrong_deliverable_type(self) -> None:
+        self.data["generation_handoff"]["deliverable_type"] = "COMPOSITE_KEYFRAME"
+        errors: list[str] = []
+        vsp.validate_release_inputs(self.data, errors)
+        self.assertIn(
+            "generation_handoff.deliverable_type: formal shot generation requires VIDEO_SHOT",
+            errors,
+        )
 
     def test_dynamic_environment_requires_environment_only_previs(self) -> None:
         self.data["environment_animation"].update(

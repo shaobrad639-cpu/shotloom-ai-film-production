@@ -43,6 +43,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
    - 资产与版本：[`asset-identity-lock.md`](references/asset-identity-lock.md)
    - 场景、设备、触达与摄影机空间：[`spatial-lock.md`](references/spatial-lock.md)
    - 场景空间预资产与正式场景资产包：[`scene-asset-production.md`](references/scene-asset-production.md)
+   - 独立场景、角色/道具层、关键帧和正式镜头的输出身份：[`output-asset-contract.md`](references/output-asset-contract.md)
    - 固定环境与动态环境边界：[`environment-animation-lock.md`](references/environment-animation-lock.md)
    - 固定底板、3D/2.5D 与关键帧：[`layered-keyframe-production.md`](references/layered-keyframe-production.md)
    - 同一连续 Take 的技术分段：[`one-take-continuity.md`](references/one-take-continuity.md) 与 [`actual-tail-continuation.md`](references/actual-tail-continuation.md)
@@ -61,7 +62,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 2. **资产、场景、空间与道具审核**：锁定角色、场景、固定设备和道具身份；记录出现、移动、使用、遮挡与离画原因。涉及固定设备或角色交互时核对世界坐标、相对尺寸和可触达性；没有此类内容时可 `N/A` 并说明。其强制子关卡 `gate_2b_environment_dynamics` 依次检查场景母版、动态分层、无角色环境预演和角色/物体反应计划；可见的水、云、雾、雨雪、烟火、植被、蒸汽或光照动态未通过时不得正式生成。
 3. **场面调度、角色、摄影机与声音审核**：核对角色站位、视线、左右手、动作路径、180 度轴、景别、焦距或视场角、景深/焦点、摄影机位移/旋转/变焦、速度曲线、起止状态、视差预期和运镜动机；同时规划对白、环境声、动作声和音乐剪辑点。
 4. **关键状态与 Previs/Animatic**：按动作复杂度定义首帧、接触帧、转折帧、峰值帧或尾帧，不强制每个镜头都有“峰值帧”。验证动作时长、构图、遮挡、物理接触、摄影机轨迹和剪辑点；含动态环境时还要验证环境自身运动及动作驱动的环境反应。只有同一连续 Take 的后续技术分段，才必须从上一分段实际视频提取并验收真实尾帧。
-5. **生成前放行与生成后验收**：锁定交接包和参考优先级后再生成；每个镜头都必须并列检查角色/主体动作、环境运动、摄影机运动及角色/主体与环境的因果关系，某项不适用时给出 `N/A` 依据。生成后实际观看目标帧率成片并检查全分辨率关键帧、剪辑点/技术接缝、声音、色彩、闪烁、形变、复制、穿插、资产漂移和动作倒退。
+5. **生成前放行与生成后验收**：先批准输出资产契约，明确本轮是 Clean Plate、独立角色/道具/特效层、关键帧、Storyboard 还是正式视频，并锁定必须/禁止元素、背景/Alpha、图层角色、允许烘焙内容、素材隔离和技术格式；再锁定交接包和参考优先级。每个镜头都必须并列检查角色/主体动作、环境运动、摄影机运动及角色/主体与环境的因果关系，某项不适用时给出 `N/A` 依据。生成后先验收交付物身份，再观看目标帧率成片并检查全分辨率关键帧、剪辑点/技术接缝、声音、色彩、闪烁、形变、复制、穿插、资产漂移和动作倒退。
 
 ## 不可误用的规则
 
@@ -72,6 +73,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 - **分层角色不是唯一制作方法。** 固定底板合成优先使用独立角色/道具层；角色 Rig、3D 渲染、受控局部编辑或能证明连续性的其他方法同样允许。
 - **固定机位不等于静止环境。** 摄影机空间状态可锁定，水、云、雾、雪、火、植被、蒸汽和光照仍可按登记方向、强度和相位演化。
 - **场景母版不等于最终动态背景。** 母版锁静态空间；动态层要先在无角色预演中通过，再与角色/物体合成。不能靠正式生成时整图重绘临时制造环境运动。
+- **提示词不等于输出资产契约。** 提示词描述内容，契约锁定交付物身份。需要独立场景、角色层或道具层时，不得接受综合海报、说明文字、额外角色或未批准背景。
 
 ## 摄影机交接最小字段
 
@@ -82,6 +84,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 - 所有正式镜头：JSON 通行证、镜头/Setup 设计、状态转换、资产引用、关键状态或 Previs、生成交接和验收记录。
 - 有复杂场景或道具：场景/道具台账、空间母版、触达或遮挡证据。
 - 有可见动态环境：环境动态分层清单、无角色环境预演、相位基线、反应耦合计划和完整镜头证据。
+- 每次正式生成：已批准的 `generation-output-contract.json` 及校验报告。
 - 固定底板合成：图层清单、允许变化蒙版和 Pixel Lock/静态锚点报告。
 - 移动摄影机：轨迹、焦距/焦点、几何或深度依据及重投影/视差验证。
 - 连续 Take 技术分段：真实尾帧验收、接缝前后帧、摄影机和动作相位续接。
@@ -117,6 +120,9 @@ python3 scripts/validate_scene_asset_package.py <scene-asset-package.json> --tar
 # 1) 资产清单：文件存在、逐文件 SHA-256、引用唯一性；输出 canonical digest
 python3 scripts/validate_asset_manifest.py <资产清单.json> --root <项目资产根目录>
 
+# 1a) 输出资产契约：交付物类型、素材隔离、必须/禁止元素和技术格式
+python3 scripts/validate_output_contract.py <输出资产契约.json>
+
 # 2) 通行证：previs 只查关卡 1-3 与镜头设计；release/acceptance 必须闭合资产证据
 python3 scripts/validate_shot_pass.py <通行证.json> --target previs
 python3 scripts/validate_shot_pass.py <通行证.json> --target release \
@@ -150,7 +156,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 - 故事与剧本：`story-development.md`、`screenplay.md`、`script-breakdown.json`
 - 场景与分镜：`scene-plan.json`、`scene-asset-package.json`、`shot-list.json`、`storyboard-sheet.md`、`animatic-timeline.json`
 - 模型能力：`model-capability-profile.json`；每个项目按实际 Gemini、MiniMax 或其他模型版本填写
-- 启动：`project-brief.md`、`generation-brief.md`、`independent-preflight-review.md`
+- 启动：`project-brief.md`、`generation-brief.md`、`generation-output-contract.json`、`independent-preflight-review.md`
 - 台账：`character-ledger.md`、`prop-ledger.md`、`scene-ledger.md`、`rework-version-log.md`
 - 空间与场景：`spatial-lock-check.md`、`environment-animation-lock.md`、`layer-manifest.md`
 - 连续性与关键帧：`adjacent-shot-continuity.md`、`one-take-continuity.md`、`actual-tail-validation.md`、`keyframe-animatic-validation.md`

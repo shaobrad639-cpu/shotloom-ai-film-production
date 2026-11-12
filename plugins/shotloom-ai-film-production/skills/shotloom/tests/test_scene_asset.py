@@ -52,6 +52,8 @@ def final_fixture() -> tuple[dict, dict]:
     )
     data["camera_setups"][0]["status"] = "APPROVED"
     data["picture_assets"]["scene_master_reference"] = "SC01_MASTER_v002"
+    data["picture_assets"]["scene_master_output_contract_reference"] = "SC01_MASTER_CONTRACT_v001"
+    data["picture_assets"]["scene_master_output_contract_validation_reference"] = "SC01_MASTER_CONTRACT_CHECK_PASS"
     data["environment"].update(
         {"light_state_reference": "LIGHT_SC01_v001", "look_reference": "LOOK_v001"}
     )

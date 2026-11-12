@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "contract_id": "DEMO_EP01_SH03_VIDEO_CONTRACT_v001",
+  "project_id": "DEMO_EP01",
+  "scene_id": "DEMO_EP01_SC01",
+  "shot_id": "DEMO_EP01_SH03",
+  "status": "APPROVED",
+  "deliverable_type": "VIDEO_SHOT",
+  "asset_scope": "VIDEO_SHOT",
+  "required_elements": [
+    "approved character",
+    "approved fixed equipment",
+    "single removable module",
+    "approved scene composite"
+  ],
+  "forbidden_elements": [
+    "unlisted characters",
+    "unlisted props",
+    "text or information panels",
+    "poster layout",
+    "duplicate module"
+  ],
+  "background_mode": "COMPOSITED",
+  "alpha_required": false,
+  "baked_elements_allowed": [
+    "approved scene layers",
+    "approved character and prop layers",
+    "contact shadows"
+  ],
+  "layer_role": "COMPOSITE",
+  "isolation_required": false,
+  "aspect_ratio": "16:9",
+  "resolution": "1920x1080",
+  "color_space": "Rec.709",
+  "file_format": "MP4 or approved mezzanine codec",
+  "text_policy": "FORBIDDEN",
+  "reference_priority": [
+    "accepted asset manifest",
+    "accepted actual tail",
+    "approved key states"
+  ],
+  "evidence": "generation brief and preflight review agree with this contract",
+  "approval": {
+    "status": "PASS",
+    "reviewer": "continuity supervisor",
+    "reviewed_at": "2026-11-12",
+    "evidence": "independent-preflight-review.md"
+  }
+}

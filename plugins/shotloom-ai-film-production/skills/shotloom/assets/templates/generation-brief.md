@@ -4,6 +4,10 @@
 
 - 通行证版本 / 状态：
 - sequence / scene / shot / setup / take / segment：
+- 输出资产契约 / 校验报告：
+- 交付物类型：CLEAN_PLATE / CHARACTER_LAYER / PROP_LAYER / EFFECT_LAYER / FOREGROUND_LAYER / COMPOSITE_KEYFRAME / STORYBOARD_PANEL / VIDEO_SHOT
+- 必须元素 / 禁止元素：
+- 背景模式 / Alpha / 图层角色 / 允许烘焙元素：
 - 连续性模式 / 与上一镜头关系：
 - 目标模型与控制能力：
 - 时长 / 画幅 / 帧率 / 分辨率 / 色彩空间：

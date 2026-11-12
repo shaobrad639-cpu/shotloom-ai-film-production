@@ -1,5 +1,5 @@
 {
-  "schema_version": 12,
+  "schema_version": 13,
   "shot": {
     "project_id": "",
     "sequence_id": "",
@@ -166,6 +166,9 @@
   "keyframes": [],
   "generation_handoff": {
     "model_capability": "",
+    "output_contract_reference": "",
+    "output_contract_validation_reference": "",
+    "deliverable_type": "VIDEO_SHOT",
     "reference_priority": [],
     "motion_beats": [],
     "positive_invariants": [],
@@ -180,6 +183,7 @@
     "report_reference": "",
     "script_visual_alignment": "NOT_RUN",
     "asset_direction_check": "NOT_RUN",
+    "output_contract_check": "NOT_RUN",
     "environment_motion_check": "NOT_RUN",
     "subject_environment_causality_check": "NOT_RUN",
     "camera_editing_check": "NOT_RUN",
@@ -221,6 +225,8 @@
     "full_resolution_frame_checks": [],
     "motion_review_status": "NOT_RUN",
     "motion_review_evidence": "",
+    "deliverable_identity_status": "NOT_RUN",
+    "deliverable_identity_evidence": "",
     "subject_motion_status": "NOT_RUN",
     "environment_motion_status": "NOT_RUN",
     "camera_motion_status": "NOT_RUN",

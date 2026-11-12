@@ -16,8 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_asset_manifest  # noqa: E402  (co-located helper script)
 
 
-SCHEMA_VERSION = 12
-VALIDATOR_VERSION = "2.4.0"
+SCHEMA_VERSION = 13
+VALIDATOR_VERSION = "2.5.0"
 GATE_STATUSES = {"NOT_RUN", "IN_PROGRESS", "PASS", "BLOCKED", "N/A"}
 PASS_OR_NA = {"PASS", "N/A"}
 SHOT_STATUSES = {
@@ -434,7 +434,7 @@ def validate_release_inputs(data: dict[str, Any], errors: list[str]) -> None:
             errors.append("preflight_review.context_mode: unsupported value")
         require_text(data, "preflight_review.report_reference", errors)
         for field in (
-            "script_visual_alignment", "asset_direction_check", "environment_motion_check",
+            "script_visual_alignment", "asset_direction_check", "output_contract_check", "environment_motion_check",
             "subject_environment_causality_check", "camera_editing_check",
             "physical_action_check", "sound_check",
         ):
@@ -455,9 +455,14 @@ def validate_release_inputs(data: dict[str, Any], errors: list[str]) -> None:
     if not isinstance(handoff, dict):
         errors.append("generation_handoff: required")
     else:
-        for field in ("model_capability", "audio_plan", "output_specification"):
+        for field in (
+            "model_capability", "output_contract_reference", "output_contract_validation_reference",
+            "audio_plan", "output_specification",
+        ):
             if not isinstance(handoff.get(field), str) or not handoff[field].strip():
                 errors.append(f"generation_handoff.{field}: required")
+        if handoff.get("deliverable_type") != "VIDEO_SHOT":
+            errors.append("generation_handoff.deliverable_type: formal shot generation requires VIDEO_SHOT")
         for field in (
             "reference_priority", "motion_beats", "positive_invariants",
             "negative_constraints", "acceptance_criteria",
@@ -522,6 +527,9 @@ def validate_acceptance(data: dict[str, Any], errors: list[str]) -> None:
     if sampling.get("motion_review_status") != "PASS":
         errors.append("acceptance_sampling.motion_review_status: must be PASS")
     require_text(data, "acceptance_sampling.motion_review_evidence", errors)
+    if sampling.get("deliverable_identity_status") != "PASS":
+        errors.append("acceptance_sampling.deliverable_identity_status: must be PASS")
+    require_text(data, "acceptance_sampling.deliverable_identity_evidence", errors)
     for field in (
         "subject_motion_status", "environment_motion_status", "camera_motion_status",
         "subject_environment_causality_status",
