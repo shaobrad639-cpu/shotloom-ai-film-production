@@ -1,5 +1,5 @@
 {
-  "schema_version": 14,
+  "schema_version": 15,
   "shot": {
     "project_id": "",
     "sequence_id": "",
@@ -56,7 +56,14 @@
     "core_test_reference": "",
     "core_test_acceptance_criteria": [],
     "core_test_evidence": "",
-    "rig_or_3d_justification": ""
+    "rig_or_3d_justification": "",
+    "reference_strategy": "FIRST_FRAME_ONLY",
+    "minimum_reference_reason": "use the fewest references needed to preserve identity and shot intent",
+    "precise_exit_control_required": false,
+    "primary_motion_subjects": [],
+    "secondary_subject_treatments": [],
+    "model_multi_subject_identity_verified": false,
+    "multi_subject_plan_evidence": ""
   },
   "continuity": {
     "status": "NOT_RUN",
@@ -82,7 +89,15 @@
     "camera_end_to_start_status": "N/A",
     "action_phase_status": "N/A",
     "audio_phase_status": "N/A",
-    "environment_phase_status": "N/A"
+    "environment_phase_status": "N/A",
+    "previous_actual_video_reference": "",
+    "previous_actual_tail_reference": "",
+    "previous_tail_motion_summary": "",
+    "entry_design_from_actual_tail_status": "N/A",
+    "entry_position_status": "N/A",
+    "motion_direction_status": "N/A",
+    "motion_speed_status": "N/A",
+    "impact_or_interaction_region_status": "N/A"
   },
   "scene_asset_lock": {
     "status": "NOT_RUN",
@@ -196,7 +211,11 @@
     "negative_constraints": [],
     "audio_plan": "",
     "output_specification": "",
-    "acceptance_criteria": []
+    "acceptance_criteria": [],
+    "duration_control_mode": "MODEL_NATIVE_THEN_SELECT",
+    "model_native_duration_seconds": 0,
+    "editorial_target_duration_seconds": 0,
+    "duration_behavior_evidence": ""
   },
   "preflight_review": {
     "status": "NOT_RUN",
@@ -238,6 +257,27 @@
     "released_at": "",
     "validator_result": "NOT_RUN",
     "exceptions": []
+  },
+  "edit_ready_review": {
+    "status": "NOT_RUN",
+    "source_video_reference": "",
+    "selected_in_timecode": "",
+    "selected_out_timecode": "",
+    "selected_duration_seconds": 0,
+    "story_action_readability_status": "NOT_RUN",
+    "identity_status": "NOT_RUN",
+    "scene_camera_continuity_status": "NOT_RUN",
+    "environment_status": "NOT_RUN",
+    "blocking_defects": [],
+    "deferred_polish_items": [],
+    "actual_tail_frame_reference": "",
+    "actual_tail_window_reference": "",
+    "actual_tail_motion_summary": "",
+    "timeline_reference": "",
+    "timeline_replacement_status": "NOT_RUN",
+    "evidence": "",
+    "validator_version": "",
+    "validated_at": ""
   },
   "acceptance": {
     "result": "NOT_RUN",

@@ -1,5 +1,5 @@
 {
-  "schema_version": 14,
+  "schema_version": 15,
   "shot": {
     "project_id": "DEMO_EP01",
     "sequence_id": "DEMO_EP01_SQ01",
@@ -165,7 +165,14 @@
     "core_test_reference": "keyframe-animatic-validation.md",
     "core_test_acceptance_criteria": ["contact remains readable", "no action restart", "fixed equipment remains anchored"],
     "core_test_evidence": "two-second action-risk previs passed",
-    "rig_or_3d_justification": ""
+    "rig_or_3d_justification": "",
+    "reference_strategy": "MULTI_KEYFRAME",
+    "minimum_reference_reason": "precise equipment approach benefits from three approved states",
+    "precise_exit_control_required": true,
+    "primary_motion_subjects": ["CHAR-001"],
+    "secondary_subject_treatments": [],
+    "model_multi_subject_identity_verified": false,
+    "multi_subject_plan_evidence": ""
   },
   "continuity": {
     "status": "PASS",
@@ -191,7 +198,15 @@
     "camera_end_to_start_status": "N/A",
     "action_phase_status": "N/A",
     "audio_phase_status": "N/A",
-    "environment_phase_status": "N/A"
+    "environment_phase_status": "N/A",
+    "previous_actual_video_reference": "",
+    "previous_actual_tail_reference": "",
+    "previous_tail_motion_summary": "",
+    "entry_design_from_actual_tail_status": "N/A",
+    "entry_position_status": "N/A",
+    "motion_direction_status": "N/A",
+    "motion_speed_status": "N/A",
+    "impact_or_interaction_region_status": "N/A"
   },
   "scene_asset_lock": {
     "status": "PASS",
@@ -437,7 +452,21 @@
       "contact readable",
       "segment seam invisible",
       "no asset drift"
-    ]
+    ],
+    "duration_control_mode": "MODEL_NATIVE_THEN_SELECT",
+    "model_native_duration_seconds": 8,
+    "editorial_target_duration_seconds": 7,
+    "duration_behavior_evidence": "model capability test returns an eight-second native clip; editorial selects seven seconds"
+  },
+  "edit_ready_review": {
+    "status": "NOT_RUN", "source_video_reference": "", "selected_in_timecode": "",
+    "selected_out_timecode": "", "selected_duration_seconds": 0,
+    "story_action_readability_status": "NOT_RUN", "identity_status": "NOT_RUN",
+    "scene_camera_continuity_status": "NOT_RUN", "environment_status": "NOT_RUN",
+    "blocking_defects": [], "deferred_polish_items": [], "actual_tail_frame_reference": "",
+    "actual_tail_window_reference": "", "actual_tail_motion_summary": "",
+    "timeline_reference": "", "timeline_replacement_status": "NOT_RUN", "evidence": "",
+    "validator_version": "", "validated_at": ""
   },
   "preflight_review": {
     "status": "PASS",

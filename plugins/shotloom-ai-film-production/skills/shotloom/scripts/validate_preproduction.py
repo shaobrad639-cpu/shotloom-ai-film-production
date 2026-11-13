@@ -239,6 +239,17 @@ def validate(
         warnings.append(
             "model_profile.outputs.frame_rates: timeline rate is not declared; plan deterministic normalization before edit"
         )
+    outputs = model_profile.get("outputs") if isinstance(model_profile.get("outputs"), dict) else {}
+    controls = model_profile.get("controls") if isinstance(model_profile.get("controls"), dict) else {}
+    duration_adherence = outputs.get("duration_instruction_adherence")
+    if duration_adherence not in {"UNVERIFIED", "EXACT", "APPROXIMATE", "FIXED_NATIVE"}:
+        errors.append("model_profile.outputs.duration_instruction_adherence: unsupported value")
+    multi_subject = controls.get("multi_subject_identity_reliability")
+    if multi_subject not in {"UNVERIFIED", "LOW", "MEDIUM", "HIGH"}:
+        errors.append("model_profile.controls.multi_subject_identity_reliability: unsupported value")
+    motion_fidelity = controls.get("reference_motion_fidelity")
+    if motion_fidelity not in {"UNVERIFIED", "LOW", "MEDIUM", "HIGH"}:
+        errors.append("model_profile.controls.reference_motion_fidelity: unsupported value")
 
     if target == "production":
         if breakdown.get("status") != "APPROVED":
@@ -264,6 +275,14 @@ def validate(
             errors.append("animatic.review.evidence: required for production")
         if model_profile.get("verification_status") != "VERIFIED":
             errors.append("model_profile.verification_status: must be VERIFIED for production")
+        if duration_adherence == "UNVERIFIED":
+            errors.append(
+                "model_profile.outputs.duration_instruction_adherence: must be tested for production"
+            )
+        if motion_fidelity == "UNVERIFIED":
+            errors.append(
+                "model_profile.controls.reference_motion_fidelity: must be tested for production"
+            )
 
     return errors, warnings
 

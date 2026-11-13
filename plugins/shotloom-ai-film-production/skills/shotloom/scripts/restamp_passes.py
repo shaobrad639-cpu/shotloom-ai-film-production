@@ -26,6 +26,7 @@ IGNORED_PARTS = {"__pycache__", ".git", "node_modules", ".venv"}
 TARGET_BY_STATUS = {
     "READY_FOR_RELEASE": "release",
     "GREENLIT": "release",
+    "EDIT_READY": "edit-ready",
     "ACCEPTED": "acceptance",
 }
 
@@ -95,7 +96,9 @@ def main() -> int:
         if target is None:
             results.append({"file": str(pass_file), "result": "SKIP", "detail": f"status {status} has no sealed stamp"})
             continue
-        section = "release" if target == "release" else "acceptance"
+        section = {
+            "release": "release", "edit-ready": "edit_ready_review", "acceptance": "acceptance"
+        }[target]
         stamped = get(data, f"{section}.validator_version")
         manifest = locate_manifest(data, pass_file, root, override)
         if manifest is None:

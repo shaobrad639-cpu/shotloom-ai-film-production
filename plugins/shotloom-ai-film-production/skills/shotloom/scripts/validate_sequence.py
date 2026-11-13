@@ -79,6 +79,15 @@ def validate(
             errors.append(f"{file}: continuity.previous_shot_id {previous!r} has no pass in this set")
         if relation == "EDITORIAL_CUT" and previous == shot_id:
             errors.append(f"{file}: editorial cut must reference a different shot")
+        if relation == "EDITORIAL_CUT":
+            for dotted in (
+                "continuity.previous_actual_video_reference",
+                "continuity.previous_actual_tail_reference",
+                "continuity.previous_tail_motion_summary",
+            ):
+                value = get(data, dotted)
+                if not isinstance(value, str) or not value.strip():
+                    errors.append(f"{file}: {dotted} is required for an editorial cut")
         if relation == "CONTINUOUS_SEGMENT":
             if previous != shot_id:
                 errors.append(f"{file}: CONTINUOUS_SEGMENT must continue the same shot_id")
@@ -97,7 +106,7 @@ def validate(
                 errors.append(f"{file}: segment_sequence_index must be positive")
         if manifest_digest:
             status = get(data, "shot.status")
-            if status in {"GREENLIT", "ACCEPTED"}:
+            if status in {"GREENLIT", "EDIT_READY", "ACCEPTED"}:
                 digest = get(data, "asset_identity_lock.manifest_digest_sha256")
                 if digest != manifest_digest:
                     errors.append(
@@ -126,7 +135,10 @@ def validate(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", type=Path, nargs="+", help="Directories or pass JSON files to validate.")
-    parser.add_argument("--manifest-digest", help="Asset manifest digest every GREENLIT/ACCEPTED pass must carry.")
+    parser.add_argument(
+        "--manifest-digest",
+        help="Asset manifest digest every GREENLIT/EDIT_READY/ACCEPTED pass must carry.",
+    )
     parser.add_argument("--json", action="store_true", help="Emit a machine-readable result.")
     args = parser.parse_args()
 

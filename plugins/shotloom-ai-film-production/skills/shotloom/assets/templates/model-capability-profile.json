@@ -18,6 +18,7 @@
   },
   "outputs": {
     "duration_options_seconds": [],
+    "duration_instruction_adherence": "UNVERIFIED",
     "aspect_ratios": [],
     "resolutions": [],
     "frame_rates": [],
@@ -34,6 +35,8 @@
     "motion_strength": false,
     "reference_adherence": "UNVERIFIED",
     "character_identity_control": "UNVERIFIED",
+    "multi_subject_identity_reliability": "UNVERIFIED",
+    "reference_motion_fidelity": "UNVERIFIED",
     "background_preservation": "UNVERIFIED",
     "extend_video": false,
     "continuation_from_actual_tail": false

@@ -69,10 +69,11 @@
 ## 阶段 H：模型能力配置与镜头路由
 
 1. 使用 `model-capability-profile.json` 记录当前实际可用模型，而不是凭产品名称猜能力。
-2. 至少记录：提供商、模型 ID、验证日期、输入类型、参考限制、首尾帧/延长能力、时长、画幅、分辨率、帧率、声音、摄影机控制、成本、等待时间和已知失败模式。
+2. 至少记录：提供商、模型 ID、验证日期、输入类型、参考限制、首尾帧/延长能力、原生时长、时长指令服从度、多主体身份可靠性、画幅、分辨率、帧率、声音、摄影机控制、成本、等待时间和已知失败模式。
 3. 根据镜头需求选择模型。连续性要求高但模型缺少视觉参考或续接能力时，改用分层合成、3D/2.5D、局部编辑或其他模型；不要降低镜头标准来迁就模型。
 4. 从同一镜头母规格编译模型专用交接包。模型专用提示词只能改变表达方式，不得覆盖批准资产、空间、动作、摄影机和剪辑意图。
 5. 为镜头分配 L1–L4 风险等级与制作路线。短片可使用 `EFFICIENT_SHORT`，但 L2–L4 正式镜头必须先通过核心风险小样。
+6. 为每个镜头选择最小必要参考策略。默认 `FIRST_FRAME_ONLY`；只有精确落点、接触、形态转换或出口状态确有需要且模型实测支持时，才使用首尾帧或多关键帧。多主体镜头必须指定主动作主体及其他主体的固定、遮罩、独立生成或联合生成方案。
 
 能力配置必须带 `verified_at` 和 `verification_status`。未验证或已过期的能力只能用于测试，不得作为正式放行依据。
 
@@ -82,15 +83,15 @@
 
 ## 阶段 J：生成、验收与返工
 
-1. 先校验输出资产契约，再按模型交接包生成；保留模型 ID、参数、输入版本、输出版本和重试轮次。
+1. 先校验输出资产契约，再按模型交接包生成；保留模型 ID、参数、输入版本、输出版本和重试轮次。模型时长指令不可靠时按已验证的原生时长生成，再从真实候选中选择剪辑目标区间。
 2. 先检查输出是否属于约定的交付物类型、素材是否隔离、必须/禁止元素和技术格式是否符合；再以目标帧率实际观看关键帧、角色/物体运动、环境运动、动作驱动的环境反应、摄影机、声音、剪点、跨镜头/分段相位、静态锚点和技术缺陷。
 3. 只接受能回指通行证和资产证据的版本。同一缺陷重复出现时退回造成问题的阶段，不无限抽卡。
-4. 连续 Take 的后续技术 Segment 使用验收通过的真实尾帧和尾部窗口；正常切镜不复制上一镜头像素。
-5. 同一方法失败两次后必须改变生产条件；镜头通过后立即替换时间线占位，按 C0–C4 分级把非阻断精修延后到全片阶段。
+4. 连续 Take 的后续技术 Segment 使用验收通过的真实尾帧和尾部窗口；正常切镜不复制上一镜头像素，但必须用前镜实际选用区间的尾部位置、方向、速度、动作/环境相位和作用区域设计入口。
+5. 同一方法失败两次后必须改变生产条件。真实候选的可用区间通过核心检查、已提取尾部证据并替换时间线占位后标记 `EDIT_READY`；按 C0–C4 分级把非阻断精修延后到全片阶段。
 
 ## 阶段 K：剪辑、后期与交付
 
-1. 用正式候选替换 Animatic 占位素材，保持 Shot ID、时间线位置和批准时长；任何结构性变化返回 Animatic 审核。
+1. `EDIT_READY` 时已经用选定候选替换工作时间线占位；后期继续保持 Shot ID、时间线位置和批准时长，任何结构性变化返回 Animatic 审核。
 2. 后期优先保留可编辑性：干净画面、独立字幕、分轨声音和必要的场景/角色/道具层。不要在可编辑母版中无依据烘焙字幕、音乐或不可逆效果。
 3. 完成剪辑、调色、声音、字幕和交付 QC。最终成片以时间线和交付规格为准，不以单镜头 `ACCEPTED` 代替全片验收。
 
@@ -107,4 +108,4 @@
 
 ## 模板使用顺序
 
-`project-brief.md` → `story-development.md` → `screenplay.md` → `script-breakdown.json` → `scene-plan.json` → `scene-asset-package.json (LAYOUT)` → `shot-list.json` → `storyboard-sheet.md` → `animatic-timeline.json` → `scene-asset-package.json (FINAL，含环境动态分层与无角色预演)` → `model-capability-profile.json` → `shot-production-pass.json` → `generation-brief.md` → 完整镜头验收与后期。
+`project-brief.md` → `story-development.md` → `screenplay.md` → `script-breakdown.json` → `scene-plan.json` → `scene-asset-package.json (LAYOUT)` → `shot-list.json` → `storyboard-sheet.md` → `animatic-timeline.json` → `scene-asset-package.json (FINAL，含环境动态分层与无角色预演)` → `model-capability-profile.json` → `shot-production-pass.json` → `generation-brief.md` → 真实候选选段 → `edit-ready-review.md` → 完整镜头验收与后期。

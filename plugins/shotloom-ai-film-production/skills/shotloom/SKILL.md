@@ -5,7 +5,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 
 # Shotloom｜镜织 · AI电影制作
 
-把 AI 生成当作电影制作中的一个执行环节，而不是让模型临场决定剧本、机位、资产和剪辑。项目从故事与剧本进入场景规划、镜头表、Storyboard 和 Animatic，锁定可剪辑方案后才生产正式镜头。正式素材必须能回指剧本意图、镜头设计、已批准资产和可观察证据；低成本预演可以使用占位资产，但必须明确不能继承为最终基线。
+把 AI 生成当作电影制作中的一个执行环节，而不是让模型临场决定剧本、机位、资产和剪辑。项目从故事与剧本进入场景规划、镜头表、Storyboard 和 Animatic，锁定可剪辑方案后才生产正式镜头。正式生产采用“镜头目标驱动 + 真实视频证据驱动”：只准备实现镜头目标所需的最少输入，先用模型实测动作，再由已选用视频的真实尾部状态驱动下一镜头。正式素材必须能回指剧本意图、镜头设计、已批准资产和可观察证据；低成本预演可以使用占位资产，但必须明确不能继承为最终基线。
 
 ## 先判断从哪里开始
 
@@ -31,10 +31,10 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 
 1. 读取已有材料并确定当前入口；缺少剧本时不要假装进入镜头生产，缺少 Storyboard/Animatic 时不要用正式生成代替预演。
 2. 使用故事开发、剧本、拆解和场景计划建立前期包；先批准场景空间预资产，再制作镜头表、Storyboard 与 Animatic。镜头号、场景号和版本进入前期包后保持稳定。
-3. 为本项目建立实际模型能力配置；记录真实提供商、模型 ID、验证日期、输入输出、时长与控制能力。Gemini、MiniMax 或其他模型的产品名不得替代能力证据。
+3. 为本项目建立实际模型能力配置；记录真实提供商、模型 ID、验证日期、输入输出、原生时长、时长指令服从度、多主体身份可靠性与控制能力。Gemini、MiniMax 或其他模型的产品名不得替代能力证据。
 4. 初剪与声音节拍成立后，将 Animatic 标记为 `LOCKED_FOR_PRODUCTION`；据此制作并验收正式场景资产包、角色和道具资产。可见动态环境必须先完成动态分层和无角色环境预演，再加入角色/物体。正式关键帧不得直接继承空间预资产或 Storyboard 占位图。
 5. 运行 [`validate_scene_asset_package.py`](scripts/validate_scene_asset_package.py) 检查场景空间预资产或正式场景资产包；正式包必须闭合到已验收资产清单和文件 SHA-256。
-6. 正式资产通过后才复制 [`shot-production-pass.json`](assets/templates/shot-production-pass.json)，填写 `sequence/scene/shot/setup/take/segment`、与上一镜头的关系及本轮目标。
+6. 正式资产通过后才复制 [`shot-production-pass.json`](assets/templates/shot-production-pass.json)，填写 `sequence/scene/shot/setup/take/segment`、与上一镜头的关系及本轮目标；正常切镜也要引用上一镜实际视频尾部的位置、方向、速度和作用区域。
 7. 先运行 [`validate_asset_manifest.py`](scripts/validate_asset_manifest.py) 校验资产清单与每个文件的 SHA-256，把它输出的 `manifest_digest_sha256` 写进通行证；再按阶段运行 [`validate_shot_pass.py`](scripts/validate_shot_pass.py)，放行前用 [`validate_sequence.py`](scripts/validate_sequence.py) 校验跨镜头链。Markdown 通行证只供阅读，JSON 是机器状态源。
 8. 按需读取：
    - 端到端制作、剧本/分镜/Animatic 与模型适配：[`end-to-end-production-workflow.md`](references/end-to-end-production-workflow.md)
@@ -49,6 +49,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
    - 同一连续 Take 的技术分段：[`one-take-continuity.md`](references/one-take-continuity.md) 与 [`actual-tail-continuation.md`](references/actual-tail-continuation.md)
    - 相邻镜头、返工与版本：[`continuity-and-versioning.md`](references/continuity-and-versioning.md)
    - 模型交接与重试：[`generation-handoff.md`](references/generation-handoff.md)
+   - 最小必要输入、模型原生时长、真实视频接镜与 `EDIT_READY`：[`video-evidence-driven-workflow.md`](references/video-evidence-driven-workflow.md)
    - 短片的轻量路线、小样、换方法和停止标准：[`efficient-production-mode.md`](references/efficient-production-mode.md)
    - 前期与成片 QC：[`preproduction-and-quality-control.md`](references/preproduction-and-quality-control.md)
    - 连续 Take 示例：[`shot-03-case.md`](references/shot-03-case.md)
@@ -64,8 +65,8 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 1. **剧本、剪辑与动作审核**：明确场景目的、镜头目的、动作节拍、入口/出口状态、时长、与前后镜头的剪辑关系，以及为什么需要这个景别和机位。允许同场景切镜、反打、插入镜头和时间省略，但必须有编辑意图并通过轴线、视线、屏幕方向和动作匹配检查。
 2. **资产、场景、空间与道具审核**：锁定角色、场景、固定设备和道具身份；记录出现、移动、使用、遮挡与离画原因。涉及固定设备或角色交互时核对世界坐标、相对尺寸和可触达性；没有此类内容时可 `N/A` 并说明。其强制子关卡 `gate_2b_environment_dynamics` 依次检查场景母版、动态分层、无角色环境预演和角色/物体反应计划；可见的水、云、雾、雨雪、烟火、植被、蒸汽或光照动态未通过时不得正式生成。
 3. **场面调度、角色、摄影机与声音审核**：核对角色站位、视线、左右手、动作路径、180 度轴、景别、焦距或视场角、景深/焦点、摄影机位移/旋转/变焦、速度曲线、起止状态、视差预期和运镜动机；同时规划对白、环境声、动作声和音乐剪辑点。
-4. **关键状态与 Previs/Animatic**：按动作复杂度定义首帧、接触帧、转折帧、峰值帧或尾帧，不强制每个镜头都有“峰值帧”。验证动作时长、构图、遮挡、物理接触、摄影机轨迹和剪辑点；含动态环境时还要验证环境自身运动及动作驱动的环境反应。只有同一连续 Take 的后续技术分段，才必须从上一分段实际视频提取并验收真实尾帧。
-5. **生成前放行与生成后验收**：先批准输出资产契约，明确本轮是 Clean Plate、独立角色/道具/特效层、关键帧、Storyboard 还是正式视频，并锁定必须/禁止元素、背景/Alpha、图层角色、允许烘焙内容、素材隔离和技术格式；再锁定交接包和参考优先级。每个镜头都必须并列检查角色/主体动作、环境运动、摄影机运动及角色/主体与环境的因果关系，某项不适用时给出 `N/A` 依据。生成后先验收交付物身份，再观看目标帧率成片并检查全分辨率关键帧、剪辑点/技术接缝、声音、色彩、闪烁、形变、复制、穿插、资产漂移和动作倒退。
+4. **关键状态与 Previs/Animatic**：默认只准备一张完整首帧和镜头交接；只有精确落点、接触、转换或出口状态确实需要、且模型实测支持时，才增加尾帧或中间关键状态。验证动作时长、构图、遮挡、物理接触、摄影机轨迹和剪辑点；含动态环境时还要验证环境自身运动及动作驱动的环境反应。只有同一连续 Take 的后续技术分段，才必须把上一分段实际视频的真实尾帧作为生成起点。
+5. **生成前放行与生成后验收**：先批准输出资产契约，明确本轮是 Clean Plate、独立角色/道具/特效层、关键帧、Storyboard 还是正式视频，并锁定必须/禁止元素、背景/Alpha、图层角色、允许烘焙内容、素材隔离和技术格式；再锁定交接包和参考优先级。按模型已验证的原生时长生成，时长指令不可靠时从候选中选择实际可用区间。每个镜头都必须并列检查角色/主体动作、环境运动、摄影机运动及角色/主体与环境的因果关系，某项不适用时给出 `N/A` 依据。可剪区间通过核心检查后标记 `EDIT_READY`，立即替换工作时间线占位，并提取真实尾帧、尾部窗口、方向、速度和相位用于下一镜头；最终音画与交付质量通过后才 `ACCEPTED`。
 
 ## 不可误用的规则
 
@@ -79,6 +80,9 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 - **提示词不等于输出资产契约。** 提示词描述内容，契约锁定交付物身份。需要独立场景、角色层或道具层时，不得接受综合海报、说明文字、额外角色或未批准背景。
 - **轻量制作不等于降低连续性标准。** 它减少重复审核和低收益精修，不允许忽略身份、空间、动作因果、环境反应或技术接缝。
 - **参考图视频不是唯一默认路线。** 按镜头风险选择直接参考视频、底板合成、关键帧引导或 Rig/3D；采用能达到交付标准的最低复杂度方法。
+- **关键帧数量不代表控制质量。** 默认采用最小必要参考；只有精确出口或模型验证需要时才增加尾帧和中间帧。
+- **提示秒数不等于实际时长。** 记录模型原生时长并在剪辑中选用目标区间；只有能力测试通过才依赖精确时长控制。
+- **多主体不默认联合生成。** 指定主动作主体；易漂移的配角、设备或小物体优先固定、遮罩、独立生成或合成，联合生成必须有身份可靠性证据。
 
 ## 摄影机交接最小字段
 
@@ -101,8 +105,10 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 - `DRAFT`：设计中。
 - `BLOCKED`：关键条件缺失或冲突。
 - `READY_FOR_PREVIS`：可制作低成本预演，不代表可生成正式素材。
+- `PREVIS`：动作或技术路线的小样已经形成，仍不是正式可剪镜头。
 - `READY_FOR_RELEASE`：正式输入完整，等待机器校验。
 - `GREENLIT`：允许生成正式素材。
+- `EDIT_READY`：真实候选区间通过核心检查、已回填时间线并提取尾部证据；允许把轻微问题延后统一精修。
 - `ACCEPTED / REJECTED / SUPERSEDED`：验收通过、拒绝或被新版本替代。
 
 ## 校验命令与证据链
@@ -129,9 +135,11 @@ python3 scripts/validate_asset_manifest.py <资产清单.json> --root <项目资
 # 1a) 输出资产契约：交付物类型、素材隔离、必须/禁止元素和技术格式
 python3 scripts/validate_output_contract.py <输出资产契约.json>
 
-# 2) 通行证：previs 只查关卡 1-3 与镜头设计；release/acceptance 必须闭合资产证据
+# 2) 通行证：previs 只查关卡 1-3；release/edit-ready/acceptance 必须闭合资产证据
 python3 scripts/validate_shot_pass.py <通行证.json> --target previs
 python3 scripts/validate_shot_pass.py <通行证.json> --target release \
+  --manifest <资产清单.json> --root <项目资产根目录> --stamp
+python3 scripts/validate_shot_pass.py <通行证.json> --target edit-ready \
   --manifest <资产清单.json> --root <项目资产根目录> --stamp
 python3 scripts/validate_shot_pass.py <通行证.json> --target acceptance \
   --manifest <资产清单.json> --root <项目资产根目录> --stamp
@@ -150,9 +158,9 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 ```
 
 - 资产证据闭合的含义：通行证 `asset_identity_lock.assets` 必须逐条等于清单条目（ID、类型、版本、文件、SHA），`asset_baselines`、`scene_asset_lock`、`picture_lock`、`keyframes` 里出现的每个引用都必须在清单内，`asset_identity_lock.manifest_digest_sha256` 必须等于清单的 canonical digest。
-- release/acceptance 缺少 `--manifest` 会直接 `BLOCKED`；`--allow-unverified` 只用于离线演示，不得用于正式交付。
-- `--stamp` 才会写入 `shot.status`、`release/acceptance.validator_version` 与时间戳；手工改 JSON 会与 `release.validator_version` 校验冲突。
-- 被旧版校验器（如 2.0.0）盖过章的 `GREENLIT/ACCEPTED` 通行证用 `--restamp` 迁移：它按当前证据链重新校验，通过后只刷新 `validator_version/validated_at`，不降低已过关卡；证据不足时 `BLOCKED`，不会强行盖章。批量迁移用 `scripts/restamp_passes.py`，先 `--dry-run` 再实际执行。
+- release/edit-ready/acceptance 缺少 `--manifest` 会直接 `BLOCKED`；`--allow-unverified` 只用于离线演示，不得用于正式交付。
+- `--stamp` 才会写入 `shot.status`、对应阶段的 `validator_version` 与时间戳；手工改 JSON 会与版本校验冲突。
+- 被旧版校验器盖过章的 `GREENLIT/EDIT_READY/ACCEPTED` 通行证用 `--restamp` 迁移：它按当前证据链重新校验，通过后只刷新 `validator_version/validated_at`，不降低已过关卡；证据不足时 `BLOCKED`，不会强行盖章。批量迁移用 `scripts/restamp_passes.py`，先 `--dry-run` 再实际执行。
 - 只有 `REJECTED` / `SUPERSEDED` 可以通过 `--reopen --reason "..."` 回到 `DRAFT` 重做；其它状态不应手改 JSON。
 - 校验器版本以脚本内 `VALIDATOR_VERSION` 为准，插件清单版本只用于分发；发布时两者必须同步升级并在提交说明里写清楚。
 - 同一缺陷连续出现两次，或同一未改变生产条件的方案达到三轮（`current_round >= max_rounds`），停止抽卡并退回造成问题的关卡。返工优先级为：安全裁切 → 局部修复 → 合成/剪辑修复 → 重做关键状态 → 重生当前技术分段或 Shot；任何改变剧情状态、空间、资产身份或动作相位的修复都必须重新过关。
@@ -166,7 +174,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 - 台账：`character-ledger.md`、`prop-ledger.md`、`scene-ledger.md`、`rework-version-log.md`
 - 空间与场景：`spatial-lock-check.md`、`environment-animation-lock.md`、`layer-manifest.md`
 - 连续性与关键帧：`adjacent-shot-continuity.md`、`one-take-continuity.md`、`actual-tail-validation.md`、`keyframe-animatic-validation.md`
-- 合成与验收：`pixel-lock-check.md`、`acceptance-sampling.md`
+- 合成与验收：`pixel-lock-check.md`、`edit-ready-review.md`、`acceptance-sampling.md`
 - 高效制作：`sequence-progress-board.md`
 - 机器可读：`shot-production-pass.json`、`asset-manifest.json`；阅读版：`shot-production-pass.md`
 - 示例：`examples/shot-03/`（通过 `--target release` 的完整证据链，以及单点阻断样例）

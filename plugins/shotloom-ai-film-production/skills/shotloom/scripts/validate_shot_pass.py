@@ -16,19 +16,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_asset_manifest  # noqa: E402  (co-located helper script)
 
 
-SCHEMA_VERSION = 14
-VALIDATOR_VERSION = "2.6.0"
+SCHEMA_VERSION = 15
+VALIDATOR_VERSION = "2.7.0"
 GATE_STATUSES = {"NOT_RUN", "IN_PROGRESS", "PASS", "BLOCKED", "N/A"}
 PASS_OR_NA = {"PASS", "N/A"}
 SHOT_STATUSES = {
-    "DRAFT", "BLOCKED", "READY_FOR_PREVIS", "READY_FOR_RELEASE",
-    "GREENLIT", "ACCEPTED", "REJECTED", "SUPERSEDED",
+    "DRAFT", "BLOCKED", "READY_FOR_PREVIS", "PREVIS", "READY_FOR_RELEASE",
+    "GREENLIT", "EDIT_READY", "ACCEPTED", "REJECTED", "SUPERSEDED",
 }
 STATUS_RANK = {
     "SUPERSEDED": -1, "REJECTED": -1, "DRAFT": 0, "BLOCKED": 0,
-    "READY_FOR_PREVIS": 1, "READY_FOR_RELEASE": 2, "GREENLIT": 3, "ACCEPTED": 4,
+    "READY_FOR_PREVIS": 1, "PREVIS": 1, "READY_FOR_RELEASE": 2,
+    "GREENLIT": 3, "EDIT_READY": 4, "ACCEPTED": 5,
 }
-TARGET_RANK = {"previs": 1, "release": 3, "acceptance": 4}
+TARGET_RANK = {"previs": 1, "release": 3, "edit-ready": 4, "acceptance": 5}
 REOPENABLE = {"REJECTED", "SUPERSEDED"}
 REQUIRED_GATES = {
     "previs": (
@@ -37,6 +38,11 @@ REQUIRED_GATES = {
         "gate_3_blocking_camera_sound",
     ),
     "release": (
+        "gate_1_script_edit_action", "gate_2_assets_scene_space_props",
+        "gate_2b_environment_dynamics",
+        "gate_3_blocking_camera_sound", "gate_4_key_states_previs", "gate_5a_release",
+    ),
+    "edit-ready": (
         "gate_1_script_edit_action", "gate_2_assets_scene_space_props",
         "gate_2b_environment_dynamics",
         "gate_3_blocking_camera_sound", "gate_4_key_states_previs", "gate_5a_release",
@@ -63,6 +69,14 @@ PRODUCTION_ROUTES = {
     "DIRECT_REFERENCE_VIDEO", "PLATE_PLUS_VIDEO_COMPOSITE",
     "KEYFRAME_GUIDED_VIDEO", "RIG_OR_3D_CONTROLLED",
 }
+REFERENCE_STRATEGIES = {
+    "FIRST_FRAME_ONLY", "FIRST_AND_LAST", "MULTI_KEYFRAME",
+    "VIDEO_REFERENCE", "COMPOSITE_INPUT",
+}
+SECONDARY_SUBJECT_TREATMENTS = {
+    "FIXED_COMPOSITE", "MASKED_LOCAL_MOTION", "SEPARATE_PASS", "JOINT_GENERATION",
+}
+DURATION_CONTROL_MODES = {"MODEL_NATIVE_THEN_SELECT", "TARGET_DURATION_IF_SUPPORTED"}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -209,6 +223,38 @@ def validate_production_strategy(data: dict[str, Any], errors: list[str]) -> Non
     if route == "RIG_OR_3D_CONTROLLED":
         require_text(data, "production_strategy.rig_or_3d_justification", errors)
 
+    reference_strategy = strategy.get("reference_strategy")
+    if reference_strategy not in REFERENCE_STRATEGIES:
+        errors.append(
+            f"production_strategy.reference_strategy: expected one of {sorted(REFERENCE_STRATEGIES)}"
+        )
+    require_text(data, "production_strategy.minimum_reference_reason", errors)
+    if not isinstance(strategy.get("precise_exit_control_required"), bool):
+        errors.append("production_strategy.precise_exit_control_required: must be boolean")
+    require_list(data, "production_strategy.primary_motion_subjects", errors, nonempty=True)
+    secondary = require_list(data, "production_strategy.secondary_subject_treatments", errors)
+    joint_generation = False
+    for index, item in enumerate(secondary):
+        prefix = f"production_strategy.secondary_subject_treatments[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+        for field in ("subject_id", "reason"):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                errors.append(f"{prefix}.{field}: required")
+        treatment = item.get("treatment")
+        if treatment not in SECONDARY_SUBJECT_TREATMENTS:
+            errors.append(f"{prefix}.treatment: unsupported value")
+        joint_generation = joint_generation or treatment == "JOINT_GENERATION"
+    if not isinstance(strategy.get("model_multi_subject_identity_verified"), bool):
+        errors.append("production_strategy.model_multi_subject_identity_verified: must be boolean")
+    if secondary:
+        require_text(data, "production_strategy.multi_subject_plan_evidence", errors)
+    if joint_generation and strategy.get("model_multi_subject_identity_verified") is not True:
+        errors.append(
+            "production_strategy.model_multi_subject_identity_verified: JOINT_GENERATION requires verified identity reliability"
+        )
+
 
 def validate_asset_identity(data: dict[str, Any], target: str, errors: list[str]) -> None:
     lock = data.get("asset_identity_lock")
@@ -348,6 +394,19 @@ def validate_continuity(data: dict[str, Any], errors: list[str]) -> None:
                 errors.append("continuity.previous_shot_id: required for EDITORIAL_CUT")
             elif previous == get(data, "shot.shot_id"):
                 errors.append("continuity.previous_shot_id: must differ from shot_id for EDITORIAL_CUT")
+            for dotted in (
+                "continuity.previous_actual_video_reference",
+                "continuity.previous_actual_tail_reference",
+                "continuity.previous_tail_motion_summary",
+            ):
+                require_text(data, dotted, errors)
+            for field in (
+                "entry_design_from_actual_tail_status", "entry_position_status",
+                "motion_direction_status", "motion_speed_status",
+                "impact_or_interaction_region_status",
+            ):
+                if continuity.get(field) not in PASS_OR_NA:
+                    errors.append(f"continuity.{field}: EDITORIAL_CUT requires PASS or N/A")
         return
 
     if not isinstance(continuity.get("is_take_start"), bool):
@@ -381,7 +440,8 @@ def validate_continuity(data: dict[str, Any], errors: list[str]) -> None:
             errors.append("continuity.actual_tail_required: later segment must be true")
         for dotted in (
             "continuity.previous_tail_asset_version", "continuity.previous_tail_validation_reference",
-            "continuity.previous_tail_window_reference",
+            "continuity.previous_tail_window_reference", "continuity.previous_actual_video_reference",
+            "continuity.previous_actual_tail_reference", "continuity.previous_tail_motion_summary",
         ):
             require_text(data, dotted, errors)
         if continuity.get("previous_tail_acceptance_status") != "PASS":
@@ -391,6 +451,9 @@ def validate_continuity(data: dict[str, Any], errors: list[str]) -> None:
         for field in (
             "camera_end_to_start_status", "action_phase_status",
             "audio_phase_status", "environment_phase_status",
+            "entry_design_from_actual_tail_status", "entry_position_status",
+            "motion_direction_status", "motion_speed_status",
+            "impact_or_interaction_region_status",
         ):
             if continuity.get(field) not in PASS_OR_NA:
                 errors.append(f"continuity.{field}: must be PASS or N/A")
@@ -526,11 +589,43 @@ def validate_release_inputs(data: dict[str, Any], errors: list[str]) -> None:
         ):
             require_list(data, f"generation_handoff.{field}", errors, nonempty=True)
 
+        duration_mode = handoff.get("duration_control_mode")
+        if duration_mode not in DURATION_CONTROL_MODES:
+            errors.append(
+                f"generation_handoff.duration_control_mode: expected one of {sorted(DURATION_CONTROL_MODES)}"
+            )
+        native_duration = handoff.get("model_native_duration_seconds")
+        target_duration = handoff.get("editorial_target_duration_seconds")
+        if not finite_number(native_duration) or native_duration <= 0:
+            errors.append("generation_handoff.model_native_duration_seconds: must be greater than zero")
+        if not finite_number(target_duration) or target_duration <= 0:
+            errors.append("generation_handoff.editorial_target_duration_seconds: must be greater than zero")
+        elif finite_number(get(data, "shot.duration_seconds")) and abs(
+            target_duration - get(data, "shot.duration_seconds")
+        ) > 0.1:
+            errors.append("generation_handoff.editorial_target_duration_seconds: must match shot.duration_seconds")
+        if (
+            duration_mode == "MODEL_NATIVE_THEN_SELECT"
+            and finite_number(native_duration)
+            and finite_number(target_duration)
+            and native_duration < target_duration
+        ):
+            errors.append(
+                "generation_handoff.model_native_duration_seconds: native duration must cover editorial target"
+            )
+        require_text(data, "generation_handoff.duration_behavior_evidence", errors)
+
     keyframes = require_list(data, "keyframes", errors, nonempty=True)
     roles = {frame.get("role") for frame in keyframes if isinstance(frame, dict)}
-    for role in ("first", "last"):
-        if role not in roles:
-            errors.append(f"keyframes: missing {role!r} state")
+    if "first" not in roles:
+        errors.append("keyframes: missing 'first' state")
+    strategy = get(data, "production_strategy.reference_strategy")
+    precise_exit = get(data, "production_strategy.precise_exit_control_required") is True
+    if strategy in {"FIRST_AND_LAST", "MULTI_KEYFRAME"} or precise_exit:
+        if "last" not in roles:
+            errors.append("keyframes: last state required by the selected reference strategy")
+    if strategy == "MULTI_KEYFRAME" and len(keyframes) < 3:
+        errors.append("keyframes: MULTI_KEYFRAME requires at least three states")
     for index, frame in enumerate(keyframes):
         if not isinstance(frame, dict):
             errors.append(f"keyframes[{index}]: must be an object")
@@ -543,6 +638,43 @@ def validate_release_inputs(data: dict[str, Any], errors: list[str]) -> None:
         errors.append("release.references_locked: must be true")
     for dotted in ("release.released_by", "release.released_at"):
         require_text(data, dotted, errors)
+
+
+def validate_edit_ready(data: dict[str, Any], errors: list[str]) -> None:
+    review = data.get("edit_ready_review")
+    if not isinstance(review, dict) or review.get("status") != "PASS":
+        errors.append("edit_ready_review.status: edit-ready requires PASS")
+        return
+    for dotted in (
+        "edit_ready_review.source_video_reference",
+        "edit_ready_review.selected_in_timecode",
+        "edit_ready_review.selected_out_timecode",
+        "edit_ready_review.actual_tail_frame_reference",
+        "edit_ready_review.actual_tail_window_reference",
+        "edit_ready_review.actual_tail_motion_summary",
+        "edit_ready_review.timeline_reference",
+        "edit_ready_review.evidence",
+    ):
+        require_text(data, dotted, errors)
+    duration = review.get("selected_duration_seconds")
+    target_duration = get(data, "generation_handoff.editorial_target_duration_seconds")
+    if not finite_number(duration) or duration <= 0:
+        errors.append("edit_ready_review.selected_duration_seconds: must be greater than zero")
+    elif finite_number(target_duration) and abs(duration - target_duration) > 0.1:
+        errors.append("edit_ready_review.selected_duration_seconds: must match editorial target duration")
+    for field in (
+        "story_action_readability_status", "identity_status",
+        "scene_camera_continuity_status", "environment_status",
+        "timeline_replacement_status",
+    ):
+        if review.get(field) not in PASS_OR_NA:
+            errors.append(f"edit_ready_review.{field}: must be PASS or N/A")
+    blockers = require_list(data, "edit_ready_review.blocking_defects", errors)
+    require_list(data, "edit_ready_review.deferred_polish_items", errors)
+    if blockers:
+        errors.append("edit_ready_review.blocking_defects: must be empty")
+    if review.get("timeline_replacement_status") != "PASS":
+        errors.append("edit_ready_review.timeline_replacement_status: must be PASS")
 
 
 def validate_retry(data: dict[str, Any], errors: list[str]) -> None:
@@ -578,6 +710,8 @@ def validate_retry(data: dict[str, Any], errors: list[str]) -> None:
 
 
 def validate_acceptance(data: dict[str, Any], errors: list[str]) -> None:
+    if get(data, "edit_ready_review.status") != "PASS":
+        errors.append("edit_ready_review.status: acceptance requires prior EDIT_READY PASS")
     sampling = data.get("acceptance_sampling")
     if not isinstance(sampling, dict) or sampling.get("status") != "PASS":
         errors.append("acceptance_sampling.status: acceptance requires PASS")
@@ -772,16 +906,24 @@ def validate_target(
                 errors.append(f"gates.{gate_name}.status: {target} requires PASS or justified N/A")
         elif gate_status != "PASS":
             errors.append(f"gates.{gate_name}.status: {target} requires PASS")
-    if target in {"release", "acceptance"}:
+    if target in {"release", "edit-ready", "acceptance"}:
         questions = get(data, "constraints.critical_open_questions")
         if isinstance(questions, list) and questions:
             errors.append("constraints.critical_open_questions: must be empty before release")
         validate_release_inputs(data, errors)
-        if status in {"GREENLIT", "ACCEPTED"}:
+        if status in {"GREENLIT", "EDIT_READY", "ACCEPTED"}:
             if get(data, "release.validator_result") != "PASS":
-                errors.append("release.validator_result: GREENLIT/ACCEPTED requires PASS")
+                errors.append("release.validator_result: GREENLIT/EDIT_READY/ACCEPTED requires PASS")
             if not restamp and get(data, "release.validator_version") != VALIDATOR_VERSION:
                 errors.append(f"release.validator_version: expected {VALIDATOR_VERSION}")
+    if target in {"edit-ready", "acceptance"}:
+        validate_edit_ready(data, errors)
+        if (
+            status in {"EDIT_READY", "ACCEPTED"}
+            and not restamp
+            and get(data, "edit_ready_review.validator_version") != VALIDATOR_VERSION
+        ):
+            errors.append(f"edit_ready_review.validator_version: expected {VALIDATOR_VERSION}")
     if target == "acceptance":
         validate_acceptance(data, errors)
         if (
@@ -809,7 +951,7 @@ def report(args: argparse.Namespace, payload: dict[str, Any], lines: list[str]) 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("pass_file", type=Path)
-    parser.add_argument("--target", choices=("previs", "release", "acceptance"))
+    parser.add_argument("--target", choices=("previs", "release", "edit-ready", "acceptance"))
     parser.add_argument("--stamp", action="store_true")
     parser.add_argument(
         "--restamp",
@@ -829,8 +971,8 @@ def main() -> int:
         parser.error("--reopen cannot be combined with --target, --stamp or --restamp")
     if not args.reopen and not args.target:
         parser.error("--target is required unless --reopen is used")
-    if args.restamp and args.target not in {"release", "acceptance"}:
-        parser.error("--restamp is only meaningful for --target release or acceptance")
+    if args.restamp and args.target not in {"release", "edit-ready", "acceptance"}:
+        parser.error("--restamp is only meaningful for --target release, edit-ready or acceptance")
 
     try:
         data = json.loads(args.pass_file.read_text(encoding="utf-8"))
@@ -867,7 +1009,7 @@ def main() -> int:
     root = (args.root or args.pass_file.parent).resolve()
     if args.manifest:
         validate_evidence(data, args.manifest, root, errors)
-    elif target in {"release", "acceptance"} and not args.allow_unverified:
+    elif target in {"release", "edit-ready", "acceptance"} and not args.allow_unverified:
         errors.append(
             f"{target} validation requires --manifest (asset manifest) or an explicit --allow-unverified"
         )
@@ -893,9 +1035,15 @@ def main() -> int:
 
     previous_version = None
     if args.stamp or args.restamp:
-        desired = {"previs": "READY_FOR_PREVIS", "release": "GREENLIT", "acceptance": "ACCEPTED"}[target]
+        desired = {
+            "previs": "PREVIS", "release": "GREENLIT",
+            "edit-ready": "EDIT_READY", "acceptance": "ACCEPTED",
+        }[target]
         current = data["shot"]["status"]
-        stamp_section = "release" if target == "release" else "acceptance"
+        stamp_section = {
+            "previs": "release", "release": "release",
+            "edit-ready": "edit_ready_review", "acceptance": "acceptance",
+        }[target]
         previous_version = get(data, f"{stamp_section}.validator_version")
         next_status = current if STATUS_RANK.get(current, -1) >= STATUS_RANK[desired] else desired
         data["shot"]["status"] = next_status
@@ -903,6 +1051,10 @@ def main() -> int:
         if target == "release":
             data["release"].update(
                 {"validator_result": "PASS", "validator_version": VALIDATOR_VERSION, "validated_at": now}
+            )
+        if target == "edit-ready":
+            data["edit_ready_review"].update(
+                {"validator_version": VALIDATOR_VERSION, "validated_at": now}
             )
         if target == "acceptance":
             data["acceptance"].update({"validator_version": VALIDATOR_VERSION, "validated_at": now})

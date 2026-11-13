@@ -72,6 +72,9 @@ def approved_fixture() -> tuple[dict, list[dict], list[dict], dict, dict, dict]:
         }
     )
     model["outputs"]["frame_rates"] = ["24/1"]
+    model["outputs"]["duration_instruction_adherence"] = "FIXED_NATIVE"
+    model["controls"]["multi_subject_identity_reliability"] = "LOW"
+    model["controls"]["reference_motion_fidelity"] = "HIGH"
     return breakdown, [scene], [scene_asset], shots, animatic, model
 
 

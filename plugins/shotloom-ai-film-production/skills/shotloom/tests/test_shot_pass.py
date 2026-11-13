@@ -1,4 +1,4 @@
-"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.6.0)."""
+"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.7.0)."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ class ShotPassTests(unittest.TestCase):
         self.mutate(lambda data: data["release"].update({"validator_version": "2.0.0"}))
         blocked = self.release()
         self.assertEqual(blocked.returncode, 1)
-        self.assertIn("expected 2.6.0", blocked.stdout)
+        self.assertIn("expected 2.7.0", blocked.stdout)
 
         result = self.release("--restamp")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -168,7 +168,7 @@ class ShotPassTests(unittest.TestCase):
         result = self.release("--json")
         payload = json.loads(result.stdout)
         self.assertEqual(payload["status"], "PASS")
-        self.assertEqual(payload["validator_version"], "2.6.0")
+        self.assertEqual(payload["validator_version"], "2.7.0")
 
     def test_stamp_writes_validator_metadata(self) -> None:
         self.mutate(lambda data: data["shot"].update({"status": "READY_FOR_RELEASE"}))
@@ -176,8 +176,34 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         data = load_json(self.pass_file)
         self.assertEqual(data["shot"]["status"], "GREENLIT")
-        self.assertEqual(data["release"]["validator_version"], "2.6.0")
+        self.assertEqual(data["release"]["validator_version"], "2.7.0")
         self.assertEqual(data["release"]["validator_result"], "PASS")
+
+    def test_edit_ready_stamp_uses_real_selection_and_replaces_timeline(self) -> None:
+        def ready(data):
+            data["edit_ready_review"] = {
+                "status": "PASS", "source_video_reference": "candidate-v004.mp4",
+                "selected_in_timecode": "00:00:00:12", "selected_out_timecode": "00:00:07:12",
+                "selected_duration_seconds": 7, "story_action_readability_status": "PASS",
+                "identity_status": "PASS", "scene_camera_continuity_status": "PASS",
+                "environment_status": "N/A", "blocking_defects": [],
+                "deferred_polish_items": ["minor edge cleanup"],
+                "actual_tail_frame_reference": "tail-v004.png",
+                "actual_tail_window_reference": "tail-window-v004.mp4",
+                "actual_tail_motion_summary": "right hand settles with the module",
+                "timeline_reference": "rough-cut-v008", "timeline_replacement_status": "PASS",
+                "evidence": "edit-ready review 24", "validator_version": "", "validated_at": "",
+            }
+
+        self.mutate(ready)
+        result = self.run_pass(
+            self.pass_file, "--target", "edit-ready", "--manifest", self.manifest,
+            "--root", self.example, "--stamp",
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        data = load_json(self.pass_file)
+        self.assertEqual(data["shot"]["status"], "EDIT_READY")
+        self.assertEqual(data["edit_ready_review"]["validator_version"], "2.7.0")
 
 
 class RuleTests(unittest.TestCase):
@@ -346,6 +372,111 @@ class RuleTests(unittest.TestCase):
             "generation_handoff.deliverable_type: formal shot generation requires VIDEO_SHOT",
             errors,
         )
+
+    def test_first_frame_only_does_not_require_last_frame(self) -> None:
+        self.data["production_strategy"].update(
+            {"reference_strategy": "FIRST_FRAME_ONLY", "precise_exit_control_required": False}
+        )
+        self.data["keyframes"] = [self.data["keyframes"][0]]
+        errors: list[str] = []
+        vsp.validate_release_inputs(self.data, errors)
+        self.assertFalse(any("last state required" in error for error in errors), errors)
+
+    def test_precise_exit_requires_last_frame(self) -> None:
+        self.data["production_strategy"].update(
+            {"reference_strategy": "FIRST_FRAME_ONLY", "precise_exit_control_required": True}
+        )
+        self.data["keyframes"] = [self.data["keyframes"][0]]
+        errors: list[str] = []
+        vsp.validate_release_inputs(self.data, errors)
+        self.assertTrue(any("last state required" in error for error in errors), errors)
+
+    def test_multi_keyframe_requires_three_states(self) -> None:
+        self.data["production_strategy"]["reference_strategy"] = "MULTI_KEYFRAME"
+        self.data["keyframes"] = [self.data["keyframes"][0], self.data["keyframes"][-1]]
+        errors: list[str] = []
+        vsp.validate_release_inputs(self.data, errors)
+        self.assertTrue(any("at least three" in error for error in errors), errors)
+
+    def test_native_duration_must_cover_editorial_selection(self) -> None:
+        self.data["generation_handoff"].update(
+            {
+                "duration_control_mode": "MODEL_NATIVE_THEN_SELECT",
+                "model_native_duration_seconds": 5,
+                "editorial_target_duration_seconds": 7,
+            }
+        )
+        errors: list[str] = []
+        vsp.validate_release_inputs(self.data, errors)
+        self.assertTrue(any("native duration must cover" in error for error in errors), errors)
+
+    def test_editorial_cut_requires_previous_actual_tail_evidence(self) -> None:
+        self.data["shot"].update(
+            {
+                "continuity_mode": "EDITORIAL_SHOT", "relation_from_previous": "EDITORIAL_CUT",
+                "segment_id": "", "segment_sequence_index": 1,
+            }
+        )
+        self.data["continuity"].update(
+            {
+                "previous_shot_id": "DEMO_EP01_SH02", "merge_with_previous_segment": False,
+                "actual_tail_required": False, "previous_actual_video_reference": "",
+                "previous_actual_tail_reference": "", "previous_tail_motion_summary": "",
+            }
+        )
+        errors: list[str] = []
+        vsp.validate_continuity(self.data, errors)
+        self.assertTrue(any("previous_actual_tail_reference" in error for error in errors), errors)
+
+    def test_joint_multi_subject_generation_requires_verified_reliability(self) -> None:
+        self.data["production_strategy"].update(
+            {
+                "secondary_subject_treatments": [
+                    {"subject_id": "CHAR-002", "treatment": "JOINT_GENERATION", "reason": "shared action"}
+                ],
+                "multi_subject_plan_evidence": "capability probe",
+                "model_multi_subject_identity_verified": False,
+            }
+        )
+        errors: list[str] = []
+        vsp.validate_production_strategy(self.data, errors)
+        self.assertTrue(any("JOINT_GENERATION requires" in error for error in errors), errors)
+
+    def edit_ready(self) -> None:
+        self.data["edit_ready_review"] = {
+            "status": "PASS", "source_video_reference": "candidate-v004.mp4",
+            "selected_in_timecode": "00:00:00:12", "selected_out_timecode": "00:00:07:12",
+            "selected_duration_seconds": 7, "story_action_readability_status": "PASS",
+            "identity_status": "PASS", "scene_camera_continuity_status": "PASS",
+            "environment_status": "N/A", "blocking_defects": [],
+            "deferred_polish_items": ["minor feather detail"],
+            "actual_tail_frame_reference": "tail-v004.png",
+            "actual_tail_window_reference": "tail-window-v004.mp4",
+            "actual_tail_motion_summary": "subject exits right at medium speed",
+            "timeline_reference": "rough-cut-v008", "timeline_replacement_status": "PASS",
+            "evidence": "review log 24", "validator_version": "", "validated_at": "",
+        }
+
+    def test_edit_ready_requires_immediate_timeline_replacement(self) -> None:
+        self.edit_ready()
+        self.data["edit_ready_review"]["timeline_replacement_status"] = "NOT_RUN"
+        errors: list[str] = []
+        vsp.validate_edit_ready(self.data, errors)
+        self.assertTrue(any("timeline_replacement_status" in error for error in errors), errors)
+
+    def test_edit_ready_rejects_wrong_selected_duration(self) -> None:
+        self.edit_ready()
+        self.data["edit_ready_review"]["selected_duration_seconds"] = 6
+        errors: list[str] = []
+        vsp.validate_edit_ready(self.data, errors)
+        self.assertTrue(any("must match editorial target" in error for error in errors), errors)
+
+    def test_acceptance_requires_prior_edit_ready_pass(self) -> None:
+        self.acceptance_ready()
+        self.data["edit_ready_review"] = {"status": "NOT_RUN"}
+        errors: list[str] = []
+        vsp.validate_acceptance(self.data, errors)
+        self.assertTrue(any("prior EDIT_READY" in error for error in errors), errors)
 
     def test_dynamic_environment_requires_environment_only_previs(self) -> None:
         self.data["environment_animation"].update(
