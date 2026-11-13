@@ -205,6 +205,15 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(data["shot"]["status"], "EDIT_READY")
         self.assertEqual(data["edit_ready_review"]["validator_version"], "2.7.0")
 
+    def test_acceptance_cannot_skip_edit_ready_state(self) -> None:
+        self.mutate(lambda data: data["shot"].update({"status": "GREENLIT"}))
+        result = self.run_pass(
+            self.pass_file, "--target", "acceptance", "--manifest", self.manifest,
+            "--root", self.example,
+        )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("requires a prior EDIT_READY stamp", result.stdout)
+
 
 class RuleTests(unittest.TestCase):
     def setUp(self) -> None:

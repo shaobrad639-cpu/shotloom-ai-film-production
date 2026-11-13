@@ -1,6 +1,6 @@
 {
   "name": "shotloom-ai-film-production",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "license": "MIT",
   "description": "An end-to-end film-structured AI-video workflow from story and screenplay through scene-asset production, storyboard, animatic, model handoff, shot production, editorial continuity, and evidence-based acceptance.",
   "keywords": [

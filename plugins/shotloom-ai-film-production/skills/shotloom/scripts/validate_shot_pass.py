@@ -899,6 +899,10 @@ def validate_target(
         errors.append(f"shot.status: {status} is closed; reopen it with --reopen --reason first")
     elif rank > TARGET_RANK[target]:
         errors.append(f"shot.status: {status} is beyond the {target} target")
+    if target == "edit-ready" and status not in {"GREENLIT", "EDIT_READY"}:
+        errors.append("shot.status: edit-ready requires a prior GREENLIT release")
+    if target == "acceptance" and status not in {"EDIT_READY", "ACCEPTED"}:
+        errors.append("shot.status: acceptance requires a prior EDIT_READY stamp")
     for gate_name in REQUIRED_GATES[target]:
         gate_status = get(data, f"gates.{gate_name}.status")
         if gate_name == "gate_2b_environment_dynamics":
