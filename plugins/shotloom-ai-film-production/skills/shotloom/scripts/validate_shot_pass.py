@@ -16,8 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_asset_manifest  # noqa: E402  (co-located helper script)
 
 
-SCHEMA_VERSION = 15
-VALIDATOR_VERSION = "2.7.0"
+SCHEMA_VERSION = 16
+VALIDATOR_VERSION = "2.8.0"
 GATE_STATUSES = {"NOT_RUN", "IN_PROGRESS", "PASS", "BLOCKED", "N/A"}
 PASS_OR_NA = {"PASS", "N/A"}
 SHOT_STATUSES = {
@@ -77,6 +77,15 @@ SECONDARY_SUBJECT_TREATMENTS = {
     "FIXED_COMPOSITE", "MASKED_LOCAL_MOTION", "SEPARATE_PASS", "JOINT_GENERATION",
 }
 DURATION_CONTROL_MODES = {"MODEL_NATIVE_THEN_SELECT", "TARGET_DURATION_IF_SUPPORTED"}
+ASSET_PARTICIPATION_MODES = {
+    "DIRECT_MODEL_INPUT", "ASSEMBLED_IN_INPUT", "VIDEO_REFERENCE",
+    "FIXED_COMPOSITE", "MASKED_LOCAL_EDIT", "SEPARATE_PASS", "POST_COMPOSITE",
+}
+MODEL_INPUT_STRATEGIES = {
+    "DIRECT_MULTI_REFERENCE", "ASSEMBLED_KEYFRAME", "VIDEO_REFERENCE",
+    "SEGMENTED_COMPOSITE", "FIXED_PLATE_COMPOSITE", "HYBRID",
+}
+MODEL_INPUT_TYPES = {"TEXT", "IMAGE", "VIDEO", "AUDIO", "CONTROL_DATA"}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -286,6 +295,133 @@ def validate_asset_identity(data: dict[str, Any], target: str, errors: list[str]
         sha = asset.get("sha256")
         if isinstance(sha, str) and not SHA256_RE.fullmatch(sha):
             errors.append(f"{prefix}.sha256: invalid")
+
+
+def validate_asset_usage(data: dict[str, Any], target: str, errors: list[str]) -> None:
+    """Prove approved assets actually participate in generation or controlled compositing."""
+    if target == "previs":
+        return
+    audit = data.get("asset_usage_audit")
+    if not isinstance(audit, dict) or audit.get("status") != "PASS":
+        errors.append("asset_usage_audit.status: formal generation requires PASS")
+        return
+    for dotted in (
+        "asset_usage_audit.shot_asset_map_reference",
+        "asset_usage_audit.assembly_record_reference",
+        "asset_usage_audit.model_capability_profile_reference",
+        "asset_usage_audit.model_input_manifest_reference",
+        "asset_usage_audit.capability_fit_evidence",
+    ):
+        require_text(data, dotted, errors)
+    if audit.get("unique_baselines_status") != "PASS":
+        errors.append("asset_usage_audit.unique_baselines_status: must be PASS")
+    if audit.get("all_visible_entities_mapped") is not True:
+        errors.append("asset_usage_audit.all_visible_entities_mapped: must be true")
+    if audit.get("capability_fit_status") != "PASS":
+        errors.append("asset_usage_audit.capability_fit_status: must be PASS")
+    if audit.get("model_input_strategy") not in MODEL_INPUT_STRATEGIES:
+        errors.append("asset_usage_audit.model_input_strategy: unsupported value")
+
+    locked_assets = {
+        item.get("reference")
+        for item in get(data, "asset_identity_lock.assets") or []
+        if isinstance(item, dict) and item.get("status") == "ACCEPTED"
+    }
+    model_inputs = require_list(data, "asset_usage_audit.model_received_inputs", errors, nonempty=True)
+    received_references: set[str] = set()
+    for index, item in enumerate(model_inputs):
+        prefix = f"asset_usage_audit.model_received_inputs[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+        for field in ("input_id", "reference", "purpose", "evidence"):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                errors.append(f"{prefix}.{field}: required")
+        if item.get("input_type") not in MODEL_INPUT_TYPES:
+            errors.append(f"{prefix}.input_type: unsupported value")
+        if item.get("verified_received") is not True:
+            errors.append(f"{prefix}.verified_received: must be true")
+        reference = item.get("reference")
+        if isinstance(reference, str) and reference.strip():
+            received_references.add(reference)
+
+    source_assets = require_list(data, "asset_usage_audit.source_assets", errors, nonempty=True)
+    covered: set[str] = set()
+    transmitted_modes = {"DIRECT_MODEL_INPUT", "ASSEMBLED_IN_INPUT", "VIDEO_REFERENCE"}
+    for index, item in enumerate(source_assets):
+        prefix = f"asset_usage_audit.source_assets[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+        for field in (
+            "asset_reference", "asset_type", "role_in_shot", "actual_input_reference", "evidence",
+        ):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                errors.append(f"{prefix}.{field}: required")
+        reference = item.get("asset_reference")
+        if isinstance(reference, str) and reference.strip():
+            covered.add(reference)
+            if reference not in locked_assets:
+                errors.append(f"{prefix}.asset_reference: {reference!r} is not an ACCEPTED locked asset")
+        if item.get("approved_status") != "PASS":
+            errors.append(f"{prefix}.approved_status: must be PASS")
+        mode = item.get("participation_mode")
+        if mode not in ASSET_PARTICIPATION_MODES:
+            errors.append(f"{prefix}.participation_mode: unsupported value")
+        actual_input = item.get("actual_input_reference")
+        if mode in transmitted_modes and actual_input not in received_references:
+            errors.append(
+                f"{prefix}.actual_input_reference: transmitted asset is absent from model_received_inputs"
+            )
+
+    baselines: set[str] = set()
+    scene = get(data, "asset_baselines.scene")
+    if isinstance(scene, str) and scene.strip():
+        baselines.add(scene)
+    for dotted in ("asset_baselines.characters", "asset_baselines.props"):
+        baselines.update(value for value in (get(data, dotted) or []) if isinstance(value, str) and value)
+    missing = sorted(baselines - covered)
+    if missing:
+        errors.append(f"asset_usage_audit.source_assets: missing baseline participation for {missing}")
+
+    transformed = require_list(data, "asset_usage_audit.new_or_transformed_entities", errors)
+    for index, item in enumerate(transformed):
+        prefix = f"asset_usage_audit.new_or_transformed_entities[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+        for field in (
+            "entity_id", "approved_visual_reference", "introduction_state",
+            "actual_input_reference", "evidence",
+        ):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                errors.append(f"{prefix}.{field}: required")
+        visual_reference = item.get("approved_visual_reference")
+        if isinstance(visual_reference, str) and visual_reference not in locked_assets:
+            errors.append(f"{prefix}.approved_visual_reference: must be an ACCEPTED locked visual asset")
+        mode = item.get("participation_mode")
+        if mode not in ASSET_PARTICIPATION_MODES:
+            errors.append(f"{prefix}.participation_mode: unsupported value")
+        actual_input = item.get("actual_input_reference")
+        if mode in transmitted_modes and actual_input not in received_references:
+            errors.append(f"{prefix}.actual_input_reference: absent from model_received_inputs")
+
+    constraints = require_list(data, "asset_usage_audit.untransmitted_constraints", errors)
+    for index, item in enumerate(constraints):
+        prefix = f"asset_usage_audit.untransmitted_constraints[{index}]"
+        if not isinstance(item, dict):
+            errors.append(f"{prefix}: must be an object")
+            continue
+        for field in ("constraint", "reason_not_directly_transmitted", "verification_method", "risk_treatment"):
+            if not isinstance(item.get(field), str) or not item[field].strip():
+                errors.append(f"{prefix}.{field}: required")
+
+    if target in {"edit-ready", "acceptance"}:
+        if audit.get("post_generation_asset_comparison_status") != "PASS":
+            errors.append(
+                "asset_usage_audit.post_generation_asset_comparison_status: edit-ready/acceptance requires PASS"
+            )
+        require_text(data, "asset_usage_audit.post_generation_asset_comparison_reference", errors)
 
 
 def validate_scene_and_space(data: dict[str, Any], target: str, errors: list[str]) -> None:
@@ -888,6 +1024,7 @@ def validate_target(
     validate_continuity(data, errors)
     validate_picture_lock(data, target, errors)
     validate_asset_identity(data, target, errors)
+    validate_asset_usage(data, target, errors)
     validate_environment(data, target, errors)
     validate_retry(data, errors)
 

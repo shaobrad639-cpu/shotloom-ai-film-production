@@ -1,5 +1,5 @@
 {
-  "schema_version": 15,
+  "schema_version": 16,
   "shot": {
     "project_id": "DEMO_EP01",
     "sequence_id": "DEMO_EP01_SQ01",
@@ -131,6 +131,92 @@
         "status": "ACCEPTED"
       }
     ]
+  },
+  "asset_usage_audit": {
+    "status": "PASS",
+    "shot_asset_map_reference": "DEMO_EP01_SHOT_ASSET_MAP_v001#SH03",
+    "assembly_record_reference": "DEMO_EP01_SH03_ASSEMBLY_v003",
+    "unique_baselines_status": "PASS",
+    "all_visible_entities_mapped": true,
+    "model_capability_profile_reference": "DEMO_MODEL_PROFILE_v002",
+    "model_input_strategy": "DIRECT_MULTI_REFERENCE",
+    "capability_fit_status": "PASS",
+    "capability_fit_evidence": "capability test confirms three keyframe inputs are accepted",
+    "model_input_manifest_reference": "DEMO_EP01_SH03_MODEL_INPUTS_v011",
+    "model_received_inputs": [
+      {
+        "input_id": "input-prompt",
+        "input_type": "TEXT",
+        "reference": "DEMO_EP01_SH03_PROMPT_v011",
+        "purpose": "motion, camera and negative constraints",
+        "verified_received": true,
+        "evidence": "generation job prompt receipt"
+      },
+      {
+        "input_id": "input-first",
+        "input_type": "IMAGE",
+        "reference": "SH03_FIRST_v003",
+        "purpose": "assembled entry state containing approved character, scene and prop baselines",
+        "verified_received": true,
+        "evidence": "generation job input manifest slot 1"
+      },
+      {
+        "input_id": "input-contact",
+        "input_type": "IMAGE",
+        "reference": "SH03_CONTACT_v003",
+        "purpose": "approved contact state",
+        "verified_received": true,
+        "evidence": "generation job input manifest slot 2"
+      },
+      {
+        "input_id": "input-last",
+        "input_type": "IMAGE",
+        "reference": "SH03_LAST_v003",
+        "purpose": "approved exit state",
+        "verified_received": true,
+        "evidence": "generation job input manifest slot 3"
+      }
+    ],
+    "source_assets": [
+      {
+        "asset_reference": "SET-001_v003",
+        "asset_type": "SCENE",
+        "role_in_shot": "scene identity and spatial design",
+        "approved_status": "PASS",
+        "participation_mode": "ASSEMBLED_IN_INPUT",
+        "actual_input_reference": "SH03_FIRST_v003",
+        "evidence": "assembly record scene layer"
+      },
+      {
+        "asset_reference": "CHAR-001_v003",
+        "asset_type": "CHARACTER",
+        "role_in_shot": "primary motion subject identity",
+        "approved_status": "PASS",
+        "participation_mode": "ASSEMBLED_IN_INPUT",
+        "actual_input_reference": "SH03_FIRST_v003",
+        "evidence": "assembly record character layer"
+      },
+      {
+        "asset_reference": "PROP-MODULE-001_v002",
+        "asset_type": "PROP",
+        "role_in_shot": "interaction prop identity",
+        "approved_status": "PASS",
+        "participation_mode": "ASSEMBLED_IN_INPUT",
+        "actual_input_reference": "SH03_FIRST_v003",
+        "evidence": "assembly record prop layer"
+      }
+    ],
+    "new_or_transformed_entities": [],
+    "untransmitted_constraints": [
+      {
+        "constraint": "fixed equipment world coordinates",
+        "reason_not_directly_transmitted": "model accepts images rather than numeric scene coordinates",
+        "verification_method": "assembled keyframe spatial check and post-generation anchor comparison",
+        "risk_treatment": "reject drift outside approved tolerance"
+      }
+    ],
+    "post_generation_asset_comparison_status": "NOT_RUN",
+    "post_generation_asset_comparison_reference": ""
   },
   "production_plan": {
     "status": "PASS",
@@ -512,7 +598,7 @@
     "released_by": "continuity supervisor",
     "released_at": "2026-11-10T02:00:00Z",
     "validator_result": "PASS",
-    "validator_version": "2.7.0",
+    "validator_version": "2.8.0",
     "validated_at": "2026-11-10T03:28:56.275101+00:00",
     "exceptions": []
   },

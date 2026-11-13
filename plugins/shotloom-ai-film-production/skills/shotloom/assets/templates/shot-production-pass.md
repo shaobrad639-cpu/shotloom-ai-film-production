@@ -36,6 +36,19 @@
 | 5A. 生成前放行 | | | |
 | 5B. 生成后验收 | | | |
 
+## 资产使用核查
+
+| 字段 | 内容 |
+|---|---|
+| Shot 资产映射 / 装配记录 | |
+| 唯一角色、场景与道具基线 | |
+| 资产参与方式 | DIRECT_MODEL_INPUT / ASSEMBLED_IN_INPUT / VIDEO_REFERENCE / FIXED_COMPOSITE / MASKED_LOCAL_EDIT / SEPARATE_PASS / POST_COMPOSITE |
+| 新出场或变形实体的批准视觉依据 | |
+| 模型输入策略 | DIRECT_MULTI_REFERENCE / ASSEMBLED_KEYFRAME / VIDEO_REFERENCE / SEGMENTED_COMPOSITE / FIXED_PLATE_COMPOSITE / HYBRID |
+| 模型实际输入清单 / 平台回执 | |
+| 未直接传入的约束 / 替代控制 | |
+| 生成后资产比对 | |
+
 ## 剪辑与连续性
 
 | 检查项 | 结果 | 证据 |

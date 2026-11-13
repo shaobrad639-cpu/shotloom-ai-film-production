@@ -1,5 +1,5 @@
 {
-  "schema_version": 15,
+  "schema_version": 16,
   "shot": {
     "project_id": "",
     "sequence_id": "",
@@ -27,6 +27,24 @@
     "manifest_digest_sha256": "",
     "manifest_validation_reference": "",
     "assets": []
+  },
+  "asset_usage_audit": {
+    "status": "NOT_RUN",
+    "shot_asset_map_reference": "",
+    "assembly_record_reference": "",
+    "unique_baselines_status": "NOT_RUN",
+    "all_visible_entities_mapped": false,
+    "model_capability_profile_reference": "",
+    "model_input_strategy": "ASSEMBLED_KEYFRAME",
+    "capability_fit_status": "NOT_RUN",
+    "capability_fit_evidence": "",
+    "model_input_manifest_reference": "",
+    "model_received_inputs": [],
+    "source_assets": [],
+    "new_or_transformed_entities": [],
+    "untransmitted_constraints": [],
+    "post_generation_asset_comparison_status": "NOT_RUN",
+    "post_generation_asset_comparison_reference": ""
   },
   "production_plan": {
     "status": "NOT_RUN",

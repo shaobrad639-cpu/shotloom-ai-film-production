@@ -1,4 +1,4 @@
-"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.7.0)."""
+"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.8.0)."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ class ShotPassTests(unittest.TestCase):
         self.mutate(lambda data: data["release"].update({"validator_version": "2.0.0"}))
         blocked = self.release()
         self.assertEqual(blocked.returncode, 1)
-        self.assertIn("expected 2.7.0", blocked.stdout)
+        self.assertIn("expected 2.8.0", blocked.stdout)
 
         result = self.release("--restamp")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -168,7 +168,7 @@ class ShotPassTests(unittest.TestCase):
         result = self.release("--json")
         payload = json.loads(result.stdout)
         self.assertEqual(payload["status"], "PASS")
-        self.assertEqual(payload["validator_version"], "2.7.0")
+        self.assertEqual(payload["validator_version"], "2.8.0")
 
     def test_stamp_writes_validator_metadata(self) -> None:
         self.mutate(lambda data: data["shot"].update({"status": "READY_FOR_RELEASE"}))
@@ -176,11 +176,17 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         data = load_json(self.pass_file)
         self.assertEqual(data["shot"]["status"], "GREENLIT")
-        self.assertEqual(data["release"]["validator_version"], "2.7.0")
+        self.assertEqual(data["release"]["validator_version"], "2.8.0")
         self.assertEqual(data["release"]["validator_result"], "PASS")
 
     def test_edit_ready_stamp_uses_real_selection_and_replaces_timeline(self) -> None:
         def ready(data):
+            data["asset_usage_audit"].update(
+                {
+                    "post_generation_asset_comparison_status": "PASS",
+                    "post_generation_asset_comparison_reference": "asset-comparison-v004",
+                }
+            )
             data["edit_ready_review"] = {
                 "status": "PASS", "source_video_reference": "candidate-v004.mp4",
                 "selected_in_timecode": "00:00:00:12", "selected_out_timecode": "00:00:07:12",
@@ -203,7 +209,7 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         data = load_json(self.pass_file)
         self.assertEqual(data["shot"]["status"], "EDIT_READY")
-        self.assertEqual(data["edit_ready_review"]["validator_version"], "2.7.0")
+        self.assertEqual(data["edit_ready_review"]["validator_version"], "2.8.0")
 
     def test_acceptance_cannot_skip_edit_ready_state(self) -> None:
         self.mutate(lambda data: data["shot"].update({"status": "GREENLIT"}))
@@ -381,6 +387,44 @@ class RuleTests(unittest.TestCase):
             "generation_handoff.deliverable_type: formal shot generation requires VIDEO_SHOT",
             errors,
         )
+
+    def test_asset_usage_must_cover_every_locked_baseline(self) -> None:
+        self.data["asset_usage_audit"]["source_assets"] = [
+            item for item in self.data["asset_usage_audit"]["source_assets"]
+            if item["asset_reference"] != "CHAR-001_v003"
+        ]
+        errors: list[str] = []
+        vsp.validate_asset_usage(self.data, "release", errors)
+        self.assertTrue(any("missing baseline participation" in error for error in errors), errors)
+
+    def test_transmitted_asset_must_be_in_actual_model_inputs(self) -> None:
+        self.data["asset_usage_audit"]["source_assets"][0]["actual_input_reference"] = "MISSING_INPUT"
+        errors: list[str] = []
+        vsp.validate_asset_usage(self.data, "release", errors)
+        self.assertTrue(any("absent from model_received_inputs" in error for error in errors), errors)
+
+    def test_new_or_transformed_entity_requires_approved_visual_reference(self) -> None:
+        self.data["asset_usage_audit"]["new_or_transformed_entities"] = [
+            {
+                "entity_id": "CHAR-NEW", "approved_visual_reference": "",
+                "introduction_state": "emerges from mist", "participation_mode": "ASSEMBLED_IN_INPUT",
+                "actual_input_reference": "SH03_CONTACT_v003", "evidence": "assembly record",
+            }
+        ]
+        errors: list[str] = []
+        vsp.validate_asset_usage(self.data, "release", errors)
+        self.assertTrue(any("approved_visual_reference" in error for error in errors), errors)
+
+    def test_model_input_receipt_must_be_verified(self) -> None:
+        self.data["asset_usage_audit"]["model_received_inputs"][0]["verified_received"] = False
+        errors: list[str] = []
+        vsp.validate_asset_usage(self.data, "release", errors)
+        self.assertTrue(any("verified_received: must be true" in error for error in errors), errors)
+
+    def test_edit_ready_requires_post_generation_asset_comparison(self) -> None:
+        errors: list[str] = []
+        vsp.validate_asset_usage(self.data, "edit-ready", errors)
+        self.assertTrue(any("post_generation_asset_comparison_status" in error for error in errors), errors)
 
     def test_first_frame_only_does_not_require_last_frame(self) -> None:
         self.data["production_strategy"].update(

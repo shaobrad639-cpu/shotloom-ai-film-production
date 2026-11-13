@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "project_id": "",
+  "map_version": "v001",
+  "status": "DRAFT",
+  "baseline_catalog": [
+    {
+      "entity_id": "",
+      "asset_type": "CHARACTER",
+      "approved_reference": "",
+      "baseline_status": "APPROVED_BASELINE",
+      "supersedes": [],
+      "evidence": ""
+    }
+  ],
+  "shots": [
+    {
+      "shot_id": "",
+      "scene_master_reference": "",
+      "visible_assets": [
+        {
+          "entity_id": "",
+          "approved_reference": "",
+          "role_in_shot": "",
+          "participation_mode": "ASSEMBLED_IN_INPUT",
+          "assembled_or_input_reference": ""
+        }
+      ],
+      "new_or_transformed_entities": [],
+      "environment_asset_references": [],
+      "storyboard_or_key_state_references": [],
+      "model_input_strategy": "ASSEMBLED_KEYFRAME",
+      "previous_actual_tail_reference": "",
+      "status": "NOT_RUN",
+      "evidence": ""
+    }
+  ],
+  "approval": {
+    "status": "NOT_RUN",
+    "approved_by": "",
+    "approved_at": "",
+    "evidence": ""
+  }
+}

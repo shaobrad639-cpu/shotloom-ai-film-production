@@ -23,6 +23,7 @@
 1. 使用 `script-breakdown.json` 为 Sequence、Scene、Beat、角色、场景、道具、声音和效果建立稳定 ID。
 2. 建立角色、场景、道具台账；区分占位资产和最终资产。
 3. 记录模型风险：多人交叉、精细手部操作、文字、镜面、左右不对称、复杂连续动作和同镜换光。
+4. 使用 `shot-asset-map.json` 建立项目级镜头资产映射；先保留需求和候选，正式生产前为每个角色、场景、道具和新形态选择唯一批准基线。
 
 放行条件：每个 Beat 可回指剧本；角色/场景/道具首次出现和状态变化明确；资产缺口与风险有负责人或缓解方案。
 
@@ -79,12 +80,12 @@
 
 ## 阶段 I：正式镜头五道关卡
 
-对进入生产的每个 Shot 执行 Shotloom 五道关卡，其中第二关 B 为环境动态控制子关卡：场景母版 → 动态分层 → 无角色环境预演 → 角色/环境反应合成 → 完整镜头验收。Storyboard 与 Animatic 提供镜头意图和时长基线，通行证负责生产证据。若正式候选迫使镜头目的、时长或剪辑结构变化，应退回镜头表/Animatic，而不是仅在提示词中暗改。
+对进入生产的每个 Shot 执行 Shotloom 五道关卡，其中第二关同时验证资产身份和实际使用：唯一正式基线 → 镜头装配 → 模型实际输入回执 → 生成后资产比对。第二关 B 为环境动态控制子关卡：场景母版 → 动态分层 → 无角色环境预演 → 角色/环境反应合成 → 完整镜头验收。Storyboard 与 Animatic 提供镜头意图和时长基线，通行证负责生产证据。若正式候选迫使镜头目的、时长或剪辑结构变化，应退回镜头表/Animatic，而不是仅在提示词中暗改。
 
 ## 阶段 J：生成、验收与返工
 
-1. 先校验输出资产契约，再按模型交接包生成；保留模型 ID、参数、输入版本、输出版本和重试轮次。模型时长指令不可靠时按已验证的原生时长生成，再从真实候选中选择剪辑目标区间。
-2. 先检查输出是否属于约定的交付物类型、素材是否隔离、必须/禁止元素和技术格式是否符合；再以目标帧率实际观看关键帧、角色/物体运动、环境运动、动作驱动的环境反应、摄影机、声音、剪点、跨镜头/分段相位、静态锚点和技术缺陷。
+1. 先校验输出资产契约和 `asset_usage_audit`，确认所有可见基线的参与方式、装配结果和模型实际输入回执，再生成；保留模型 ID、参数、输入版本、输出版本和重试轮次。模型时长指令不可靠时按已验证的原生时长生成，再从真实候选中选择剪辑目标区间。
+2. 先检查输出是否属于约定的交付物类型，再与批准角色、场景、道具、新形态和装配关键状态比对；之后以目标帧率实际观看角色/物体运动、环境运动、动作驱动的环境反应、摄影机、声音、剪点、跨镜头/分段相位、静态锚点和技术缺陷。
 3. 只接受能回指通行证和资产证据的版本。同一缺陷重复出现时退回造成问题的阶段，不无限抽卡。
 4. 连续 Take 的后续技术 Segment 使用验收通过的真实尾帧和尾部窗口；正常切镜不复制上一镜头像素，但必须用前镜实际选用区间的尾部位置、方向、速度、动作/环境相位和作用区域设计入口。
 5. 同一方法失败两次后必须改变生产条件。真实候选的可用区间通过核心检查、已提取尾部证据并替换时间线占位后标记 `EDIT_READY`；按 C0–C4 分级把非阻断精修延后到全片阶段。
@@ -108,4 +109,4 @@
 
 ## 模板使用顺序
 
-`project-brief.md` → `story-development.md` → `screenplay.md` → `script-breakdown.json` → `scene-plan.json` → `scene-asset-package.json (LAYOUT)` → `shot-list.json` → `storyboard-sheet.md` → `animatic-timeline.json` → `scene-asset-package.json (FINAL，含环境动态分层与无角色预演)` → `model-capability-profile.json` → `shot-production-pass.json` → `generation-brief.md` → 真实候选选段 → `edit-ready-review.md` → 完整镜头验收与后期。
+`project-brief.md` → `story-development.md` → `screenplay.md` → `script-breakdown.json` → `scene-plan.json` → `scene-asset-package.json (LAYOUT)` → `shot-list.json` → `storyboard-sheet.md` → `animatic-timeline.json` → `scene-asset-package.json (FINAL，含环境动态分层与无角色预演)` → `shot-asset-map.json` → `model-capability-profile.json` → `shot-production-pass.json + asset-usage-record.md` → `generation-brief.md` → 真实候选选段与资产比对 → `edit-ready-review.md` → 完整镜头验收与后期。

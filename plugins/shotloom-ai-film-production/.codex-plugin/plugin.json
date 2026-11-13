@@ -1,6 +1,6 @@
 {
   "name": "shotloom-ai-film-production",
-  "version": "3.4.1",
+  "version": "3.5.0",
   "license": "MIT",
   "description": "An end-to-end film-structured AI-video workflow from story and screenplay through scene-asset production, storyboard, animatic, model handoff, shot production, editorial continuity, and evidence-based acceptance.",
   "keywords": [
@@ -15,7 +15,7 @@
   "interface": {
     "displayName": "Shotloom · 镜织 AI电影制作",
     "shortDescription": "从剧本、分镜到生成和验收的电影化 AI 视频流程",
-    "longDescription": "从故事、剧本、场景资产、Storyboard 与 Animatic 到正式生成和后期验收；采用镜头目标与真实视频证据驱动，支持最小必要参考、模型原生时长后选段、多主体分治、正常切镜的实际尾部接续、连续分段真实尾帧续接，以及 PREVIS、EDIT_READY、ACCEPTED 分级状态。",
+    "longDescription": "从故事、剧本、场景资产、Storyboard 与 Animatic 到正式生成和后期验收；采用镜头目标、资产装配与真实视频证据驱动，强制核查唯一资产基线、模型实际输入回执、变形角色视觉依据和生成后资产一致性，并支持原生时长后选段、真实尾部接镜及 PREVIS、EDIT_READY、ACCEPTED 分级状态。",
     "category": "Productivity",
     "defaultPrompt": [
       "使用 Shotloom 从剧本、分镜或当前素材开始规划这个 AI 视频项目。",
