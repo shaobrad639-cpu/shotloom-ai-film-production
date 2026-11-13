@@ -1,5 +1,5 @@
 {
-  "schema_version": 13,
+  "schema_version": 14,
   "shot": {
     "project_id": "DEMO_EP01",
     "sequence_id": "DEMO_EP01_SQ01",
@@ -145,6 +145,41 @@
     "model_risk_review_reference": "DEMO_SH03_RISK_v002",
     "visual_direction_reference": "DEMO_VISUAL_BIBLE_v001",
     "audio_intent": "保留机械解锁声与稳定环境底"
+  },
+  "production_strategy": {
+    "status": "PASS",
+    "mode": "EFFICIENT_SHORT",
+    "risk_tier": "L2",
+    "production_route": "KEYFRAME_GUIDED_VIDEO",
+    "route_version": "v001",
+    "route_rationale": "short precise equipment interaction benefits from accepted key states without a reusable rig",
+    "change_review_status": "PASS",
+    "inherited_locked_items": [
+      "accepted character identity",
+      "accepted scene bundle",
+      "fixed camera setup"
+    ],
+    "changed_items": [
+      "current segment action phase"
+    ],
+    "impacted_checks": [
+      "action timing",
+      "contact",
+      "continuous-segment seam"
+    ],
+    "full_rereview_required": false,
+    "core_test_required": true,
+    "core_test_status": "PASS",
+    "core_test_reason": "",
+    "core_test_duration_seconds": 2.0,
+    "core_test_reference": "keyframe-animatic-validation.md",
+    "core_test_acceptance_criteria": [
+      "contact remains readable",
+      "no action restart",
+      "fixed equipment remains anchored"
+    ],
+    "core_test_evidence": "two-second action-risk previs passed",
+    "rig_or_3d_justification": ""
   },
   "continuity": {
     "status": "PASS",
@@ -443,6 +478,12 @@
     "max_rounds": 3,
     "same_defect_count": 0,
     "same_defect_limit": 2,
+    "method_id": "KEYFRAME_GUIDED_VIDEO_v001",
+    "method_attempt_count": 0,
+    "method_attempt_limit": 2,
+    "method_switch_required": false,
+    "previous_method_id": "",
+    "method_switch_reason": "",
     "last_defect": "",
     "repair_ladder_step": "",
     "changed_production_condition": ""
@@ -452,7 +493,7 @@
     "released_by": "continuity supervisor",
     "released_at": "2026-11-10T02:00:00Z",
     "validator_result": "PASS",
-    "validator_version": "2.5.0",
+    "validator_version": "2.6.0",
     "validated_at": "2026-11-10T03:28:56.275101+00:00",
     "exceptions": []
   },
@@ -472,6 +513,25 @@
     "deliverable_identity_status": "NOT_RUN",
     "deliverable_identity_evidence": "",
     "audio_review_status": "NOT_RUN",
-    "audio_review_evidence": ""
+    "audio_review_evidence": "",
+    "defect_triage": {
+      "status": "NOT_RUN",
+      "c0_blocking": [],
+      "c1_must_fix": [],
+      "c2_conditional": [],
+      "c2_disposition": "",
+      "c3_deferred_polish": [],
+      "c4_accepted": [],
+      "delivery_resolution_review_status": "NOT_RUN",
+      "evidence": ""
+    },
+    "timeline_integration": {
+      "status": "NOT_RUN",
+      "reason": "",
+      "timeline_reference": "",
+      "sequence_playback_status": "NOT_RUN",
+      "full_film_priority_status": "NOT_RUN",
+      "evidence": ""
+    }
   }
 }

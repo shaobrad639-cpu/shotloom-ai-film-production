@@ -21,6 +21,8 @@
     "aspect_ratios": [],
     "resolutions": [],
     "frame_rates": [],
+    "transparent_background_image": false,
+    "transparent_alpha_video": false,
     "audio_generation": false,
     "variable_frame_rate_possible": null,
     "watermark_or_provenance": ""
@@ -30,6 +32,9 @@
     "negative_prompt": false,
     "camera_control": [],
     "motion_strength": false,
+    "reference_adherence": "UNVERIFIED",
+    "character_identity_control": "UNVERIFIED",
+    "background_preservation": "UNVERIFIED",
     "extend_video": false,
     "continuation_from_actual_tail": false
   },

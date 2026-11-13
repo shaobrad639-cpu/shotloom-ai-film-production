@@ -27,6 +27,10 @@
       "transition_out": "CUT",
       "storyboard_reference": "",
       "model_risks": [],
+      "production_risk_tier": "L1",
+      "preferred_production_route": "KEYFRAME_GUIDED_VIDEO",
+      "core_test_required": false,
+      "whole_film_priority": "NORMAL",
       "status": "PLANNED"
     }
   ]

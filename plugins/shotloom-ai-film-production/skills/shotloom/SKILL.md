@@ -49,6 +49,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
    - 同一连续 Take 的技术分段：[`one-take-continuity.md`](references/one-take-continuity.md) 与 [`actual-tail-continuation.md`](references/actual-tail-continuation.md)
    - 相邻镜头、返工与版本：[`continuity-and-versioning.md`](references/continuity-and-versioning.md)
    - 模型交接与重试：[`generation-handoff.md`](references/generation-handoff.md)
+   - 短片的轻量路线、小样、换方法和停止标准：[`efficient-production-mode.md`](references/efficient-production-mode.md)
    - 前期与成片 QC：[`preproduction-and-quality-control.md`](references/preproduction-and-quality-control.md)
    - 连续 Take 示例：[`shot-03-case.md`](references/shot-03-case.md)
 
@@ -57,6 +58,8 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 只有镜头表、Storyboard、Animatic 与正式场景资产包达到当前项目所需成熟度，正式镜头才进入五道关卡。概念测试可以缩减前期产物并使用已批准的场景空间预资产，但必须标记为 `PREVIS`，不得冒充正式放行。
 
 状态只使用 `NOT_RUN / IN_PROGRESS / PASS / BLOCKED / N/A`。关键未知、互相冲突或无法验证的生产条件才 `BLOCKED`；低风险创作选择可登记为假设并在 Previs 验证，不要把所有空白都当成阻断项。
+
+短片或轻量项目可选择 `EFFICIENT_SHORT`：五关仍是质量底线，但后续轮次只复核变更及受影响项目；L2–L4 先做核心风险小样；同一方法失败两次必须换路线；验收按 C0–C4 分级并立即回填时间线。具体规则见 [`efficient-production-mode.md`](references/efficient-production-mode.md)。
 
 1. **剧本、剪辑与动作审核**：明确场景目的、镜头目的、动作节拍、入口/出口状态、时长、与前后镜头的剪辑关系，以及为什么需要这个景别和机位。允许同场景切镜、反打、插入镜头和时间省略，但必须有编辑意图并通过轴线、视线、屏幕方向和动作匹配检查。
 2. **资产、场景、空间与道具审核**：锁定角色、场景、固定设备和道具身份；记录出现、移动、使用、遮挡与离画原因。涉及固定设备或角色交互时核对世界坐标、相对尺寸和可触达性；没有此类内容时可 `N/A` 并说明。其强制子关卡 `gate_2b_environment_dynamics` 依次检查场景母版、动态分层、无角色环境预演和角色/物体反应计划；可见的水、云、雾、雨雪、烟火、植被、蒸汽或光照动态未通过时不得正式生成。
@@ -74,6 +77,8 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 - **固定机位不等于静止环境。** 摄影机空间状态可锁定，水、云、雾、雪、火、植被、蒸汽和光照仍可按登记方向、强度和相位演化。
 - **场景母版不等于最终动态背景。** 母版锁静态空间；动态层要先在无角色预演中通过，再与角色/物体合成。不能靠正式生成时整图重绘临时制造环境运动。
 - **提示词不等于输出资产契约。** 提示词描述内容，契约锁定交付物身份。需要独立场景、角色层或道具层时，不得接受综合海报、说明文字、额外角色或未批准背景。
+- **轻量制作不等于降低连续性标准。** 它减少重复审核和低收益精修，不允许忽略身份、空间、动作因果、环境反应或技术接缝。
+- **参考图视频不是唯一默认路线。** 按镜头风险选择直接参考视频、底板合成、关键帧引导或 Rig/3D；采用能达到交付标准的最低复杂度方法。
 
 ## 摄影机交接最小字段
 
@@ -85,6 +90,7 @@ description: 按电影制作规范开发剧本、规划分镜、制作与验收�
 - 有复杂场景或道具：场景/道具台账、空间母版、触达或遮挡证据。
 - 有可见动态环境：环境动态分层清单、无角色环境预演、相位基线、反应耦合计划和完整镜头证据。
 - 每次正式生成：已批准的 `generation-output-contract.json` 及校验报告。
+- `EFFICIENT_SHORT`：制作路线与变更审核；L2–L4 的核心风险小样；Sequence 完成度看板。
 - 固定底板合成：图层清单、允许变化蒙版和 Pixel Lock/静态锚点报告。
 - 移动摄影机：轨迹、焦距/焦点、几何或深度依据及重投影/视差验证。
 - 连续 Take 技术分段：真实尾帧验收、接缝前后帧、摄影机和动作相位续接。
@@ -161,6 +167,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 - 空间与场景：`spatial-lock-check.md`、`environment-animation-lock.md`、`layer-manifest.md`
 - 连续性与关键帧：`adjacent-shot-continuity.md`、`one-take-continuity.md`、`actual-tail-validation.md`、`keyframe-animatic-validation.md`
 - 合成与验收：`pixel-lock-check.md`、`acceptance-sampling.md`
+- 高效制作：`sequence-progress-board.md`
 - 机器可读：`shot-production-pass.json`、`asset-manifest.json`；阅读版：`shot-production-pass.md`
 - 示例：`examples/shot-03/`（通过 `--target release` 的完整证据链，以及单点阻断样例）
 

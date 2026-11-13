@@ -75,7 +75,7 @@ class RestampBatchTests(unittest.TestCase):
         result = run_script("restamp_passes.py", self.example)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("RESTAMPED", result.stdout)
-        self.assertEqual(load_json(self.pass_file)["release"]["validator_version"], "2.5.0")
+        self.assertEqual(load_json(self.pass_file)["release"]["validator_version"], "2.6.0")
 
 
 class PixelLockTests(unittest.TestCase):

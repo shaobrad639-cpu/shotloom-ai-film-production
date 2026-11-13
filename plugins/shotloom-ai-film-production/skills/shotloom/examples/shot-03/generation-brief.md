@@ -6,6 +6,7 @@
 | 场景 / Take / 分段 | DEMO_EP01_SC01 / TK01 / SG03 |
 | 连续性模式 | CONTINUOUS_TAKE，编辑切点 0 |
 | 模型能力 | 首尾帧控制 |
+| 制作策略 | EFFICIENT_SHORT / L2 / KEYFRAME_GUIDED_VIDEO；核心风险小样 PASS |
 | 输出资产契约 | `video-output-contract.json`；校验 PASS；类型 `VIDEO_SHOT` |
 | 输出规格 | 7 秒，16:9，保持项目既定帧率和分辨率 |
 | 当前轮次 | 1 / 3 |

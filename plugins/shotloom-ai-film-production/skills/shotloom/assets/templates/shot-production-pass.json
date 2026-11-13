@@ -1,5 +1,5 @@
 {
-  "schema_version": 13,
+  "schema_version": 14,
   "shot": {
     "project_id": "",
     "sequence_id": "",
@@ -36,6 +36,27 @@
     "model_risk_review_reference": "",
     "visual_direction_reference": "",
     "audio_intent": ""
+  },
+  "production_strategy": {
+    "status": "NOT_RUN",
+    "mode": "STANDARD",
+    "risk_tier": "L1",
+    "production_route": "KEYFRAME_GUIDED_VIDEO",
+    "route_version": "v001",
+    "route_rationale": "",
+    "change_review_status": "NOT_RUN",
+    "inherited_locked_items": [],
+    "changed_items": [],
+    "impacted_checks": [],
+    "full_rereview_required": true,
+    "core_test_required": false,
+    "core_test_status": "N/A",
+    "core_test_reason": "low-risk shot",
+    "core_test_duration_seconds": 0,
+    "core_test_reference": "",
+    "core_test_acceptance_criteria": [],
+    "core_test_evidence": "",
+    "rig_or_3d_justification": ""
   },
   "continuity": {
     "status": "NOT_RUN",
@@ -201,6 +222,12 @@
     "max_rounds": 3,
     "same_defect_count": 0,
     "same_defect_limit": 2,
+    "method_id": "",
+    "method_attempt_count": 0,
+    "method_attempt_limit": 2,
+    "method_switch_required": false,
+    "previous_method_id": "",
+    "method_switch_reason": "",
     "last_defect": "",
     "repair_ladder_step": "",
     "changed_production_condition": ""
@@ -232,6 +259,25 @@
     "camera_motion_status": "NOT_RUN",
     "subject_environment_causality_status": "NOT_RUN",
     "audio_review_status": "NOT_RUN",
-    "audio_review_evidence": ""
+    "audio_review_evidence": "",
+    "defect_triage": {
+      "status": "NOT_RUN",
+      "c0_blocking": [],
+      "c1_must_fix": [],
+      "c2_conditional": [],
+      "c2_disposition": "",
+      "c3_deferred_polish": [],
+      "c4_accepted": [],
+      "delivery_resolution_review_status": "NOT_RUN",
+      "evidence": ""
+    },
+    "timeline_integration": {
+      "status": "NOT_RUN",
+      "reason": "",
+      "timeline_reference": "",
+      "sequence_playback_status": "NOT_RUN",
+      "full_film_priority_status": "NOT_RUN",
+      "evidence": ""
+    }
   }
 }

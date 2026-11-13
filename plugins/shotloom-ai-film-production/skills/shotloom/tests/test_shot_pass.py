@@ -1,4 +1,4 @@
-"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.5.0)."""
+"""Behavioural tests for scripts/validate_shot_pass.py (validator 2.6.0)."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ class ShotPassTests(unittest.TestCase):
         self.mutate(lambda data: data["release"].update({"validator_version": "2.0.0"}))
         blocked = self.release()
         self.assertEqual(blocked.returncode, 1)
-        self.assertIn("expected 2.5.0", blocked.stdout)
+        self.assertIn("expected 2.6.0", blocked.stdout)
 
         result = self.release("--restamp")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
@@ -168,7 +168,7 @@ class ShotPassTests(unittest.TestCase):
         result = self.release("--json")
         payload = json.loads(result.stdout)
         self.assertEqual(payload["status"], "PASS")
-        self.assertEqual(payload["validator_version"], "2.5.0")
+        self.assertEqual(payload["validator_version"], "2.6.0")
 
     def test_stamp_writes_validator_metadata(self) -> None:
         self.mutate(lambda data: data["shot"].update({"status": "READY_FOR_RELEASE"}))
@@ -176,7 +176,7 @@ class ShotPassTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         data = load_json(self.pass_file)
         self.assertEqual(data["shot"]["status"], "GREENLIT")
-        self.assertEqual(data["release"]["validator_version"], "2.5.0")
+        self.assertEqual(data["release"]["validator_version"], "2.6.0")
         self.assertEqual(data["release"]["validator_result"], "PASS")
 
 
@@ -252,6 +252,85 @@ class RuleTests(unittest.TestCase):
         errors: list[str] = []
         vsp.validate_retry(self.data, errors)
         self.assertIn("retry_control: same-defect fuse is open", errors)
+
+    def test_efficient_l2_requires_core_risk_test(self) -> None:
+        self.data["production_strategy"].update(
+            {"mode": "EFFICIENT_SHORT", "risk_tier": "L2", "core_test_required": False, "core_test_status": "N/A"}
+        )
+        errors: list[str] = []
+        vsp.validate_production_strategy(self.data, errors)
+        self.assertTrue(any("efficient L2-L4" in error for error in errors), errors)
+
+    def test_change_only_review_requires_impact_scope(self) -> None:
+        self.data["production_strategy"].update(
+            {"full_rereview_required": False, "impacted_checks": []}
+        )
+        errors: list[str] = []
+        vsp.validate_production_strategy(self.data, errors)
+        self.assertTrue(any("impact scope" in error for error in errors), errors)
+
+    def test_rig_route_requires_justification(self) -> None:
+        self.data["production_strategy"].update(
+            {"production_route": "RIG_OR_3D_CONTROLLED", "rig_or_3d_justification": ""}
+        )
+        errors: list[str] = []
+        vsp.validate_production_strategy(self.data, errors)
+        self.assertIn("production_strategy.rig_or_3d_justification: must be non-empty text", errors)
+
+    def test_same_method_attempt_limit_requires_switch(self) -> None:
+        self.data["retry_control"].update({"method_attempt_count": 2, "method_attempt_limit": 2})
+        errors: list[str] = []
+        vsp.validate_retry(self.data, errors)
+        self.assertIn("retry_control: same-method attempt limit reached; change production method", errors)
+
+    def acceptance_ready(self) -> None:
+        self.data["acceptance_sampling"].update(
+            {
+                "status": "PASS",
+                "interval_seconds": 0.4,
+                "contact_sheet_reference": "contact-sheet.png",
+                "boundary_frame_radius": 3,
+                "full_resolution_frame_checks": ["first", "last"],
+                "motion_review_status": "PASS",
+                "motion_review_evidence": "played at target rate",
+                "deliverable_identity_status": "PASS",
+                "deliverable_identity_evidence": "matches VIDEO_SHOT contract",
+                "subject_motion_status": "PASS",
+                "environment_motion_status": "N/A",
+                "camera_motion_status": "N/A",
+                "subject_environment_causality_status": "N/A",
+                "audio_review_status": "N/A",
+                "audio_review_evidence": "silent design",
+                "defect_triage": {
+                    "status": "PASS", "c0_blocking": [], "c1_must_fix": [],
+                    "c2_conditional": [], "c2_disposition": "", "c3_deferred_polish": [],
+                    "c4_accepted": [], "delivery_resolution_review_status": "PASS",
+                    "evidence": "delivery-resolution review",
+                },
+                "timeline_integration": {
+                    "status": "PASS", "reason": "", "timeline_reference": "edit-v003",
+                    "sequence_playback_status": "PASS", "full_film_priority_status": "PASS",
+                    "evidence": "sequence playback",
+                },
+            }
+        )
+        self.data["acceptance"] = {
+            "result": "PASS", "accepted_asset_version": "v003", "ledger_writeback": "ledger row 3",
+        }
+
+    def test_c1_defect_blocks_acceptance(self) -> None:
+        self.acceptance_ready()
+        self.data["acceptance_sampling"]["defect_triage"]["c1_must_fix"] = ["action reverses"]
+        errors: list[str] = []
+        vsp.validate_acceptance(self.data, errors)
+        self.assertTrue(any("C0/C1" in error for error in errors), errors)
+
+    def test_efficient_mode_requires_timeline_integration(self) -> None:
+        self.acceptance_ready()
+        self.data["acceptance_sampling"]["timeline_integration"]["status"] = "N/A"
+        errors: list[str] = []
+        vsp.validate_acceptance(self.data, errors)
+        self.assertTrue(any("efficient mode requires PASS" in error for error in errors), errors)
 
     def test_formal_shot_requires_output_contract(self) -> None:
         self.data["generation_handoff"]["output_contract_reference"] = ""

@@ -16,8 +16,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import validate_asset_manifest  # noqa: E402  (co-located helper script)
 
 
-SCHEMA_VERSION = 13
-VALIDATOR_VERSION = "2.5.0"
+SCHEMA_VERSION = 14
+VALIDATOR_VERSION = "2.6.0"
 GATE_STATUSES = {"NOT_RUN", "IN_PROGRESS", "PASS", "BLOCKED", "N/A"}
 PASS_OR_NA = {"PASS", "N/A"}
 SHOT_STATUSES = {
@@ -57,6 +57,12 @@ PICTURE_MODES = {
 TRANSLATIONS = {"none", "dolly", "truck", "pedestal", "crane", "orbit", "tracking", "handheld_path"}
 ROTATIONS = {"none", "pan", "tilt", "roll", "combined"}
 LENS_CHANGES = {"none", "zoom_in", "zoom_out", "focus_pull", "iris_change", "combined"}
+PRODUCTION_MODES = {"STANDARD", "EFFICIENT_SHORT"}
+RISK_TIERS = {"L1", "L2", "L3", "L4"}
+PRODUCTION_ROUTES = {
+    "DIRECT_REFERENCE_VIDEO", "PLATE_PLUS_VIDEO_COMPOSITE",
+    "KEYFRAME_GUIDED_VIDEO", "RIG_OR_3D_CONTROLLED",
+}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -151,6 +157,57 @@ def validate_production_plan(data: dict[str, Any], errors: list[str]) -> None:
     ):
         require_text(data, dotted, errors)
     require_list(data, "production_plan.action_beats", errors, nonempty=True)
+
+
+def validate_production_strategy(data: dict[str, Any], errors: list[str]) -> None:
+    strategy = data.get("production_strategy")
+    if not isinstance(strategy, dict) or strategy.get("status") != "PASS":
+        errors.append("production_strategy.status: must be PASS")
+        return
+    if strategy.get("mode") not in PRODUCTION_MODES:
+        errors.append(f"production_strategy.mode: expected one of {sorted(PRODUCTION_MODES)}")
+    risk_tier = strategy.get("risk_tier")
+    if risk_tier not in RISK_TIERS:
+        errors.append(f"production_strategy.risk_tier: expected one of {sorted(RISK_TIERS)}")
+    route = strategy.get("production_route")
+    if route not in PRODUCTION_ROUTES:
+        errors.append(f"production_strategy.production_route: expected one of {sorted(PRODUCTION_ROUTES)}")
+    for field in ("route_version", "route_rationale"):
+        require_text(data, f"production_strategy.{field}", errors)
+    if strategy.get("change_review_status") != "PASS":
+        errors.append("production_strategy.change_review_status: must be PASS")
+    inherited = require_list(data, "production_strategy.inherited_locked_items", errors)
+    require_list(data, "production_strategy.changed_items", errors)
+    impacted = require_list(data, "production_strategy.impacted_checks", errors)
+    if not isinstance(strategy.get("full_rereview_required"), bool):
+        errors.append("production_strategy.full_rereview_required: must be boolean")
+    elif strategy.get("full_rereview_required") is False:
+        if not inherited:
+            errors.append("production_strategy.inherited_locked_items: change-only review requires locked baselines")
+        if not impacted:
+            errors.append("production_strategy.impacted_checks: change-only review requires impact scope")
+
+    core_required = strategy.get("core_test_required")
+    if not isinstance(core_required, bool):
+        errors.append("production_strategy.core_test_required: must be boolean")
+    efficient_higher_risk = strategy.get("mode") == "EFFICIENT_SHORT" and risk_tier in {"L2", "L3", "L4"}
+    if efficient_higher_risk and core_required is not True:
+        errors.append("production_strategy.core_test_required: efficient L2-L4 shots require a core-risk test")
+    if core_required is True:
+        if strategy.get("core_test_status") != "PASS":
+            errors.append("production_strategy.core_test_status: required core-risk test must PASS")
+        duration = strategy.get("core_test_duration_seconds")
+        if not finite_number(duration) or duration <= 0:
+            errors.append("production_strategy.core_test_duration_seconds: must be greater than zero")
+        for field in ("core_test_reference", "core_test_evidence"):
+            require_text(data, f"production_strategy.{field}", errors)
+        require_list(data, "production_strategy.core_test_acceptance_criteria", errors, nonempty=True)
+    elif core_required is False:
+        if strategy.get("core_test_status") != "N/A":
+            errors.append("production_strategy.core_test_status: non-required test must be N/A")
+        require_text(data, "production_strategy.core_test_reason", errors)
+    if route == "RIG_OR_3D_CONTROLLED":
+        require_text(data, "production_strategy.rig_or_3d_justification", errors)
 
 
 def validate_asset_identity(data: dict[str, Any], target: str, errors: list[str]) -> None:
@@ -493,15 +550,28 @@ def validate_retry(data: dict[str, Any], errors: list[str]) -> None:
     if not isinstance(retry, dict):
         errors.append("retry_control: required")
         return
-    values = [retry.get(k) for k in ("current_round", "max_rounds", "same_defect_count", "same_defect_limit")]
+    values = [retry.get(k) for k in (
+        "current_round", "max_rounds", "same_defect_count", "same_defect_limit",
+        "method_attempt_count", "method_attempt_limit",
+    )]
     if not all(isinstance(v, int) and not isinstance(v, bool) and v >= 0 for v in values):
         errors.append("retry_control: counters and limits must be non-negative integers")
         return
-    current, maximum, same_count, same_limit = values
+    current, maximum, same_count, same_limit, method_count, method_limit = values
     if maximum < 1 or current >= maximum:
         errors.append("retry_control: generation round limit reached or invalid")
     if same_limit < 1 or same_count >= same_limit:
         errors.append("retry_control: same-defect fuse is open")
+    require_text(data, "retry_control.method_id", errors)
+    if method_limit < 1 or method_count >= method_limit:
+        errors.append("retry_control: same-method attempt limit reached; change production method")
+    if not isinstance(retry.get("method_switch_required"), bool):
+        errors.append("retry_control.method_switch_required: must be boolean")
+    elif retry.get("method_switch_required") is True:
+        errors.append("retry_control.method_switch_required: switch method before release")
+    previous_method = retry.get("previous_method_id")
+    if isinstance(previous_method, str) and previous_method.strip() and previous_method != retry.get("method_id"):
+        require_text(data, "retry_control.method_switch_reason", errors)
     if current > 0:
         require_text(data, "retry_control.repair_ladder_step", errors)
         require_text(data, "retry_control.changed_production_condition", errors)
@@ -539,6 +609,41 @@ def validate_acceptance(data: dict[str, Any], errors: list[str]) -> None:
     if sampling.get("audio_review_status") not in PASS_OR_NA:
         errors.append("acceptance_sampling.audio_review_status: must be PASS or N/A")
     require_text(data, "acceptance_sampling.audio_review_evidence", errors)
+
+    triage = sampling.get("defect_triage")
+    if not isinstance(triage, dict) or triage.get("status") != "PASS":
+        errors.append("acceptance_sampling.defect_triage.status: must be PASS")
+    else:
+        c0 = require_list(data, "acceptance_sampling.defect_triage.c0_blocking", errors)
+        c1 = require_list(data, "acceptance_sampling.defect_triage.c1_must_fix", errors)
+        c2 = require_list(data, "acceptance_sampling.defect_triage.c2_conditional", errors)
+        require_list(data, "acceptance_sampling.defect_triage.c3_deferred_polish", errors)
+        require_list(data, "acceptance_sampling.defect_triage.c4_accepted", errors)
+        if c0 or c1:
+            errors.append("acceptance_sampling.defect_triage: C0/C1 defects must be empty before acceptance")
+        if c2:
+            require_text(data, "acceptance_sampling.defect_triage.c2_disposition", errors)
+        if triage.get("delivery_resolution_review_status") != "PASS":
+            errors.append("acceptance_sampling.defect_triage.delivery_resolution_review_status: must be PASS")
+        require_text(data, "acceptance_sampling.defect_triage.evidence", errors)
+
+    timeline = sampling.get("timeline_integration")
+    efficient = get(data, "production_strategy.mode") == "EFFICIENT_SHORT"
+    if not isinstance(timeline, dict):
+        errors.append("acceptance_sampling.timeline_integration: required")
+    elif efficient:
+        if timeline.get("status") != "PASS":
+            errors.append("acceptance_sampling.timeline_integration.status: efficient mode requires PASS")
+        for field in ("sequence_playback_status", "full_film_priority_status"):
+            if timeline.get(field) != "PASS":
+                errors.append(f"acceptance_sampling.timeline_integration.{field}: efficient mode requires PASS")
+        for field in ("timeline_reference", "evidence"):
+            require_text(data, f"acceptance_sampling.timeline_integration.{field}", errors)
+    else:
+        if timeline.get("status") not in PASS_OR_NA:
+            errors.append("acceptance_sampling.timeline_integration.status: must be PASS or N/A")
+        if timeline.get("status") == "N/A":
+            require_text(data, "acceptance_sampling.timeline_integration.reason", errors)
     if get(data, "acceptance.result") != "PASS":
         errors.append("acceptance.result: must be PASS")
     require_text(data, "acceptance.accepted_asset_version", errors)
@@ -643,6 +748,7 @@ def validate_target(
     data: dict[str, Any], target: str, errors: list[str], restamp: bool = False
 ) -> None:
     validate_production_plan(data, errors)
+    validate_production_strategy(data, errors)
     validate_scene_and_space(data, target, errors)
     validate_camera(data, errors)
     validate_continuity(data, errors)
